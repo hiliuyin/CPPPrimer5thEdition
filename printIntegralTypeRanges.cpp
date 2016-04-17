@@ -23,6 +23,11 @@ void printIntegralTypeRanges()
     std::cout << "unsigned int: " << 0 << " to " << UINT_MAX << std::endl;
     std::cout << "unsigned int: " << 0 << " to " << ~(unsigned int)0 << std::endl;
     
+    
+    std::cout << "long: " << LONG_MIN << " to " << LONG_MAX << std::endl;
+    std::cout << "long: " << ((long)1 << (sizeof(long)*BITS_PER_BYTE - 1))
+              << " to " << ~((long)1 << (sizeof(long)*BITS_PER_BYTE - 1)) << std::endl;
+    
     std::cout << "long long: " << LONG_LONG_MIN << " to " << LONG_LONG_MAX << std::endl;
     std::cout << "long long: " << ((long long)1 << (sizeof(long long)*BITS_PER_BYTE - 1))
               << " to " << ~((long long)1 << (sizeof(long long)*BITS_PER_BYTE - 1)) << std::endl;
