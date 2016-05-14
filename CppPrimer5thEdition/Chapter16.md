@@ -402,85 +402,52 @@ f3(42); // 实参是一个int类型的右值；模板参数T是int
 
 ###### 引用折叠和右值引用参数
 － 通常我们不能定义一个引用的引用，但是，通过类型别名 或 通过模板类型参数 间接定义是可以的。
-
+```
 typedef int& INT_REF;
-
 int i = 10;
-
-INT_REF &r = i; // ok
-
+INT_REF &r = i; // ok, int &r = i;
+```
  
+- 引用折叠只能应用于间接创建的引用的引用，如 类型别名 或 模板类型参数。
 
-引用折叠只能应用于间接创建的引用的引用，如类型别名或模板参数。
-Exercise 16.45: Given the following template, explain what happens if we call g on a literal value such as 42. What if we call g on a variable of type int?
+- The first of the remaining two rules for rvalue references affects old-style lvalue references as well. Recall that in pre-11 C++, it was not allowed to take a reference to a reference: something like A& & would cause a compile error. C++11, by contrast, introduces the following reference collapsing rules:
+ + A& & becomes A&
+ + A& && becomes A&
+ + A&& & becomes A&
+ + A&& && becomes A&&
 
-template <typename T>
-
-void g(T&& val)
-
-{
-
-    std::vector<T> v;
-
-}
-
- 
-
-int main()
-
-{
-
-    g(42); // compiles
-
- 
-
-    int i;
-
-    g(i); // error
-
-}
-
- 
-
-The first of the remaining two rules for rvalue references affects old-style lvalue references as well. Recall that in pre-11 C++, it was not allowed to take a reference to a reference: something like A& & would cause a compile error. C++11, by contrast, introduces the following reference collapsing rules:
-
- 
-
-A& & becomes A&
-
-A& && becomes A&
-
-A&& & becomes A&
-
-A&& && becomes A&&
-
-Secondly, there is a special template argument deduction rule for function templates that take an argument by rvalue reference to a template argument:
-
- 
-
+- Secondly, there is a special template argument deduction rule for function templates that take an argument by rvalue reference to a template argument:
+```
 template<typename T>
-
 void foo(T&&);
-
+```
 Here, the following apply:
-
- 
-
 When foo is called on an lvalue of type A, then T resolves to A& and hence, by the reference collapsing rules above, the argument type effectively becomes A&.
 
 When foo is called on an rvalue of type A, then T resolves to A, and hence the argument type becomes A&&.
 
-So case 1, when passing 42, you are calling g with a rvalue, so T is resolved to int thus g's parameter is int&& and std::vector is legal.
+```
+// Exercise 16.45: Given the following template, explain what happens if we call g on a literal value such as 42. What if we call g on a variable of type int?
 
- 
+template <typename T>
+void g(T&& val)
+{
+    std::vector<T> v;
+}
 
-In case 2, when passing i, you are calling g with a lvalue, so T is resolved to int& thus g's parameter is int& and std::vector<int&> is NOT legal.
+int main()
+{
+    g(42); // compiles
+    int i;
+    g(i); // error
+}
+// So case 1, when passing 42, you are calling g with a rvalue, so T is resolved to int thus g's parameter is int&& and std::vector is legal.
 
- 
+// In case 2, when passing i, you are calling g with a lvalue, so T is resolved to int& thus g's parameter is int& and std::vector<int&> is NOT legal.
 
-Remove the line with the vector and it will work fine in both cases.
+// Remove the line with the vector and it will work fine in both cases.
+```
 
- 
 ```
 using T1 = int&;
 using T2 = int&&;
