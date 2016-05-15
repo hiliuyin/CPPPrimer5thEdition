@@ -1,0 +1,161 @@
+#### 条款18: 使用`std::unique_ptr`管理需独占资源所有权的对象
+- C++11引入了`std::unique_ptr`，替代了之前的`std::auto_ptr`
+- `std::unique_ptr` 是类模板
+- `std::unique_ptr` 只支持移动语义，禁用拷贝语义操作
+- `std::unique_ptr` 不可作为容器中的元素
+- `std::unique_ptr` 是轻量级的，通常情况下，`std::unique_ptr`的大小和raw pointer的大小一样
+- `std::unique_ptr` 支持自定义释放内存的操作，即自定义的deleter
+- 如果要自定义deleter，只能通过`std::unique_ptr`的构造函数；`std::make_unique`没有重载支持自定义deleter的函数
+- 如果用函数指针作为自定义的deleter，那么实例化的`std::unique_ptr`的大小大于raw pointer
+- 如果用lambda表达式作为自定义的deleter，那么不会增加实例化的`std::unique_ptr`的大小
+- 
+```
+enum class InvestType
+{
+    Stock = 0,
+    Bond = 1,
+    RealEstate = 2
+};
+class Investment
+{
+public:
+    virtual ~Investment() = default; // 多态的基类析构函数必须是virtual的，否则通过指向派生类的基类指针delete是undefined behavior
+};
+class Stock : public Investment {};
+class Bond : public Investment {};
+class RealEstate : public Investment {};
+
+auto delInvmt = [](Investment* pInvestment) // lambda expression, 自定义deleter
+{
+    std::cout << "custom deleter";
+    delete pInvestment;
+};
+
+template <typename... Ts>
+std::unique_ptr<Investment, decltype(delInvmt)> makeInvestment(InvestType type, Ts&&... params)
+{
+    std::unique_ptr<Investment, decltype(delInvmt)> pInv(nullptr, delInvmt); // 自定义deleter，通过构造函数
+    
+    if (type == InvestType::Stock)
+        pInv.reset(new Stock(std::forward<Ts>(params)...));
+    else if (type == InvestType::Bond)
+        pInv.reset(new Bond(std::forward<Ts>(params)...));
+    else if (type == InvestType::RealEstate)
+        pInv.reset(new RealEstate(std::forward<Ts>(params)...));
+
+    return pInv;
+}
+
+void foo()
+{
+    auto pInv = makeInvestment(InvestType::Bond);
+}
+```
+
+- `std::unique_ptr<T[]>`用于分配数组
+
+- `std::unique_ptr`非常适用于factory模式
+- 可以将`std::unique_ptr`右值转化为`std::shared_ptr`
+```
+std::unique_ptr<Investment> makeInvestment()
+{
+    std::unique_ptr<Investment> p(new Investment());
+    return p;
+}
+std::shared_ptr<Investment> si = makeInvestment();
+```
+
+
+#### 条款19: 使用`std::shared_ptr`管理共享资源的对象
+- 相较于`std::unique_ptr`，`std::shared_ptr`是重量级的
+- `std::shared_ptr`的引用计数的增减是原子操作
+- `std::shared_ptr`的大小是raw pointer的两倍，是因为它包含两个指针，一个指向创建的对象，一个指向control block
+- `std::shared_ptr`的control block中包含有strong/weak的引用计数，自定义deleter 等等
+- `std::shared_ptr`支持自定义deleter，但自定义deleter不会增加`std::shared_ptr`的大小，因为自定义deleter位于control block中
+- `std::shared_ptr`自定义deleter的方式和`std::unique_ptr`不同，两者的类模板定义方式也不同，自定义deleter类型是`std::unique_ptr`类模板的模板类型参数
+```
+auto loggingDel = [](Widget* pw) { delete pw; };
+
+std::unique_ptr<Widget, decltype(loggingDel)> upw(new Widget(), loggingDel);
+std::shared_ptr<Widget> spw(new Widget(), loggingDel);
+```
+- 什么时候需要分配control block?
+ + 调用std::make_shared
+ + 调用std::shared_ptr的构造函数从raw pointer创建std::shared_ptr
+ + 当std::shared_ptr从std::unique_ptr或std::auto_ptr创建出来的
+- 使用std::make_shared创建std::shared_ptr可以避免两次调用new操作符分配两次内存（一次是对象，一次是control block）
+
+- `std::shared_ptr`支持拷贝语义，也支持移动语义
+- `std::shared_ptr`可作为容器中的元素
+
+- 尽量避免使用raw pointr去创建std::shared_ptr
+```
+auto pw = new Widget;
+std::shared_ptr<Widget> spw1(pw);
+std::shared_ptr<Widget> spw2(pw);
+```
+- 如果用raw pointer创建std::shared_ptr，通过临时对象可以避免上述情况
+```
+std::shared_ptr<Widget> spw1(new Widget);
+std::shared_ptr<Widget> spw1(spw2);
+```
+
+- 使用std::make_shared时，要避免引用循环；使用std::weak_ptr可以避免这种情况
+```
+struct A { std::shared_ptr<A> ptr; };
+void f()
+{
+    std::shared_ptr<A> p1 = std::make_shared<A>();
+    std::shared_ptr<A> p2 = std::make_shared<A>();
+    p1->ptr = p2;
+    p2->ptr = p1;
+} // 离开此作用域，p1和p2不会被销毁
+```
+- `std::enable_shared_from_this`是奇异递归模板（CRTP: Curiously Recurring Template Pattern）
+- `std::enable_shared_from_this`可以使我们安全地从this指针创建shared_ptr
+```
+std::vector<std::shared_ptr<Widget>> processWidgets;
+void Widget::process()
+{
+    processWidgets.emplace_back(this); // 如果外部有shared_ptr指向这个Widget对象呢？
+}
+```
+- `std::enable_shared_from_this`提供了`shared_from_this`成员函数
+```
+class Widget : public std::enable_shared_from_this<Widget>
+{
+public:
+    void process();
+};
+
+void Widget::process()
+{
+    processWidgets.emplace_back(shared_from_this());
+}
+```
+- `shared_from_this`不会创建control block，因此必须存在已经创建好的指向该对象的std::shared_ptr，否则会抛出异常
+```
+// 通过下面的模式，可以避免这种情况
+class Widget;
+std::vector<std::shared_ptr<Widget>> processedWidgets;
+
+class Widget : public std::enable_shared_from_this<Widget>
+{
+public:
+    template <typename... Ts>
+    static std::shared_ptr<Widget> createWidget(Ts&&... params) 
+    {
+        auto ptr = std::make_shared<Widget>(std::forward<Ts>(params)...);
+        return ptr;
+    }
+    
+    void process()
+    {
+        processedWidgets.emplace_back(shared_from_this());
+    }
+    
+private:
+    Widget() = default;
+};
+```
+
