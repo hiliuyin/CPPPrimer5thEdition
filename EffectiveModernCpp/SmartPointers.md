@@ -8,7 +8,6 @@
 - 如果要自定义deleter，只能通过`std::unique_ptr`的构造函数；`std::make_unique`没有重载支持自定义deleter的函数
 - 如果用函数指针作为自定义的deleter，那么实例化的`std::unique_ptr`的大小大于raw pointer
 - 如果用lambda表达式作为自定义的deleter，那么不会增加实例化的`std::unique_ptr`的大小
-- 
 ```
 enum class InvestType
 {
