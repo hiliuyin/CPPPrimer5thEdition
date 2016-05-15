@@ -159,3 +159,30 @@ resetV({1, 2, 3}); // error
 ```
 
 ####条款3: 理解decltype
+- 相较于auto类型推断和template类型推断，decltype的类型推断规则要简化清晰很多；通常情况下，decltype类型推断不会改变用于推断的类型
+```
+const int i = 0; // decltype(i) is const int
+bool f(const Widget& w); // decltype(w) is const Widget&;  decltype(f) is bool(const Widget&)
+
+struct Point {int x; int y;}; // decltype(Point.x) is int
+
+Widget w; // decltype(w) is Widget
+
+if (f(w)) ... // decltype(f(w)) is bool
+
+vector<int> v; // decltype(v) is vector<int>
+if (v[0] == 0)... // decltype(v[0]) is int&
+```
+- 对于vector的bool类型的特化版本，operator[]返回的并不是bool&
+- 如果decltype使用的表达式不是一个变量，如果表达式是一个左值表达式，那么推断的结果是左值引用
+```
+int x = 10;
+int y = 20;
+decltype(x = y) z = x; // x = y是左值表达式，z是int&
+```
+- 如果decltype的表达式是加上了括号的变量，结果将是引用
+```
+int i;
+decltype((i)) d1 = i; // d1是int&
+decltype(i) d2; // d2是int
+```
