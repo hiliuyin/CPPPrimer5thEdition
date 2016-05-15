@@ -80,27 +80,27 @@ std::unique_ptr<Widget, decltype(loggingDel)> upw(new Widget(), loggingDel);
 std::shared_ptr<Widget> spw(new Widget(), loggingDel);
 ```
 - 什么时候需要分配control block?
- + 调用std::make_shared
- + 调用std::shared_ptr的构造函数从raw pointer创建std::shared_ptr
- + 当std::shared_ptr从std::unique_ptr或std::auto_ptr创建出来的
-- 使用std::make_shared创建std::shared_ptr可以避免两次调用new操作符分配两次内存（一次是对象，一次是control block）
+ + 调用`std::make_shared`
+ + 调用`std::shared_ptr`的构造函数从raw pointer创建`std::shared_ptr`
+ + 当`std::shared_ptr`从`std::unique_ptr`或`std::auto_ptr`创建出来的
+- 使用`std::make_shared`创建`std::shared_ptr`可以避免两次调用new操作符分配两次内存（一次是对象，一次是control block）
 
 - `std::shared_ptr`支持拷贝语义，也支持移动语义
 - `std::shared_ptr`可作为容器中的元素
 
-- 尽量避免使用raw pointr去创建std::shared_ptr
+- 尽量避免使用raw pointr去创建`std::shared_ptr`
 ```
 auto pw = new Widget;
 std::shared_ptr<Widget> spw1(pw);
 std::shared_ptr<Widget> spw2(pw);
 ```
-- 如果用raw pointer创建std::shared_ptr，通过临时对象可以避免上述情况
+- 如果用raw pointer创建`std::shared_ptr`，通过临时对象可以避免上述情况
 ```
 std::shared_ptr<Widget> spw1(new Widget);
 std::shared_ptr<Widget> spw1(spw2);
 ```
 
-- 使用std::make_shared时，要避免引用循环；使用std::weak_ptr可以避免这种情况
+- 使用`std::make_shared`时，要避免引用循环；使用`std::weak_ptr`可以避免这种情况
 ```
 struct A { std::shared_ptr<A> ptr; };
 void f()
@@ -111,13 +111,13 @@ void f()
     p2->ptr = p1;
 } // 离开此作用域，p1和p2不会被销毁
 ```
-- `std::enable_shared_from_this`是奇异递归模板（CRTP: Curiously Recurring Template Pattern）
-- `std::enable_shared_from_this`可以使我们安全地从this指针创建shared_ptr
+- `std::enable_shared_from_this`是奇异递归模板（CRTP: **Curiously Recurring Template Pattern**）
+- `std::enable_shared_from_this`可以使我们安全地从this指针创建`std::shared_ptr`
 ```
 std::vector<std::shared_ptr<Widget>> processWidgets;
 void Widget::process()
 {
-    processWidgets.emplace_back(this); // 如果外部有shared_ptr指向这个Widget对象呢？
+    processWidgets.emplace_back(this); // 如果外部已经存在shared_ptr管理这个Widget对象呢？
 }
 ```
 - `std::enable_shared_from_this`提供了`shared_from_this`成员函数
@@ -133,7 +133,7 @@ void Widget::process()
     processWidgets.emplace_back(shared_from_this());
 }
 ```
-- `shared_from_this`不会创建control block，因此必须存在已经创建好的指向该对象的std::shared_ptr，否则会抛出异常
+- `shared_from_this`不会创建control block，因此必须存在已经创建好的管理该对象的`std::shared_ptr`，否则会抛出异常
 ```
 // 通过下面的模式，可以避免这种情况
 class Widget;
@@ -159,3 +159,67 @@ private:
 };
 ```
 
+#####条款20: 如何使用`std::weak_ptr`
+- `std::weak_ptr`是`std::shared_ptr`的伴随类，它是一种弱引用，指向`std::shared_ptr`所管理的对象
+- `std::weak_ptr`共享使用`std::shared_ptr`的control block，control block包括有`std::weak_ptr`的弱引用计数
+- 使用`std::weak_ptr`可避免引用循环
+- `std::weak_ptr`适合用于观察者模式
+- `expired()`可用于检查`std::weak_ptr`对应的`std::shared_ptr`是否有效
+```
+auto spw = std::make_shared<Widget>();
+std::weak_ptr<Widget> wpw(spw);
+spw = nullptr;
+...
+if (wpw.expired())
+    ...
+```
+- `lock()`可以返回有效的`std::shared_ptr`或者`nullptr`
+```
+std::shared_ptr<Widget> spw1 = wpw.lock();
+```
+
+####条款21: 优先使用`std::make_shared`和`std::make_unique`而不是new操作符
+- 使用`std::make_shared`和`std::make_unique`函数可以使代码变的优雅
+```
+std::shared_ptr<Widget> pw(new Widget());
+auto pw = std::make_shared<Widget>();
+```
+- 如果要定制deleter的话，那么就不能使用`std::make_shared`和`std::make_unique`
+- 对`std::shared_ptr`，使用`std::make_shared`更加高效，可以减少一次内存分配
+```
+std::shared_ptr<Widget> pw(new Widget()); // new操作符分配一次内存；然后再分配control block
+auto pw = std::make_shared<Widget>(); // 一次分配所有内存(包括管理的对象和control block)
+```
+- 异常安全是使用`std::make_shared`和`std::make_unique`的又一优点
+```
+processWidget(std::shared_ptr<Widget>(new Widget), computePriority()); // 非异常安全
+processWidget(std::make_shared<Widget>(), computePriority()); // 异常安全
+```
+
+####条款22: 当使用Pimpl惯用法时，必须将构造函数和析构函数定义在*.cpp文件中
+```
+// In Widget.h
+class Widget
+{
+public:
+    Widget();
+    ~Widget(); // 必须显式定义析构函数，但是不能在头文件中定义
+    
+    Widget(Widget&& w);
+    Widget& operator=(Widget&& w);
+
+private:
+    struct WidgetImpl;
+    std::unique_ptr<WidgetImpl> impl_;
+};
+
+// In Widget.cpp
+struct Widget::WidgetImpl {};
+
+Widget::Widget() : impl_(std::make_unique<WidgetImpl>()) {} // WidgetImpl的完全定义必须可见
+
+Widget::~Widget() = default; // 必须在*.cpp中定义，因为unique_ptr的销毁过程会调用Widget的析构函数，此时WidgetImpl完全定义必须是可见的
+
+Widget::Widget(Widget&& w) = default;
+Widget& Widget::operator=(Widget&& w) = default;
+```
