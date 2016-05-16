@@ -511,7 +511,6 @@ int main()
  + 声明时
  + 用作sizeof的操作数时
  + 用作&取址运算的操作数时 
-
 ```
 int a[3] = {1,2,3};
 int b[3];
@@ -528,6 +527,7 @@ sizeof(a);   // no degration.
 
 - 解引用操作符可作用于指针和数组名：
  + 对指针和一维数组解引用，会发生访存操作
+ + 对多维数组解引用，只是类型改变。
 ```
    int x = 100;
    int *p = &x;
@@ -535,11 +535,9 @@ sizeof(a);   // no degration.
    int array[2] = { 10, 20 };
    *array = 30;  // { 30, 20 }
 ```
- + 对多维数组解引用，只是类型改变。
 ```
    int array[3][4];  // *array的类型是 int[4]
 ```
-
 - 取址操作符可作用于数组名和指针：
  + 对指针取址，取得的是指针所在的地址，即指向指针的指针；
  + 对数组名取址，只是类型改变，得到的还是该数组首元素的地址。
@@ -592,13 +590,13 @@ int ia[10];
 auto ia2(ia); // 数组名发生退化，ia2类型是int*，指向ia的首元素
 ```
 
-－ C++11, decltype()和数组类型
+- C++11, decltype()和数组类型
 ``` 
 int ia[10];
 decltype(ia) ia3; // ia3是数组
 ```
 
-－ 使用范围for语句处理多维数组
+- 使用范围for语句处理多维数组
 ```
 int ia[3][4];
 size_t cnt = 0;
@@ -618,7 +616,7 @@ for (auto row : v)
 
 #####枚举(Enumerations)
 
-枚举成员是常量，必须用常量表达式初始化，枚举成员值可以不唯一（值可以重复）。
+- 枚举成员是常量，必须用常量表达式初始化，枚举成员值可以不唯一（值可以重复）。
 
 ```
  constexpr int foo() { return 100; }
@@ -631,11 +629,11 @@ for (auto row : v)
  };
 ```
 
-枚举类型的对象的初始化和赋值只能通过其枚举成员或同一枚举类型的其它对象来进行。
+- 枚举类型的对象的初始化和赋值只能通过其枚举成员或同一枚举类型的其它对象来进行。
 
-枚举类型的宽度是implementation-defined的，只要规定了其宽度能容纳下最大的枚举成员值:
-- C中char和integer类型都可以，选择权在于实现；
-- C++中则是int->unsigned int->long->unsigned long，依次选择。
+- 枚举类型的宽度是implementation-defined的，只要规定了其宽度能容纳下最大的枚举成员值:
+ + C中char和integer类型都可以，选择权在于实现；
+ + C++中则是int->unsigned int->long->unsigned long，依次选择。
 
 * **typedef**
 
