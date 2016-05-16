@@ -119,7 +119,7 @@ const auto& rx = x;
 
 auto&& uref1 = x; // uref1 is int&
 auto&& uref2 = cx; // uref2 is const int&
-auto&& uref3 = 27; // uref3 is int
+auto&& uref3 = 27; // uref3 is int&&
 ```
 
 - 数组和函数退化为指针的规则依旧适用于auto类型推断
