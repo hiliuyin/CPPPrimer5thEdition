@@ -74,3 +74,4 @@ void addDivisorFilter()
     ++divisor; // modify divisor
 }
 ```
+#####条款34: 相较于`std::bind`, lambdas通常是更优的选择
