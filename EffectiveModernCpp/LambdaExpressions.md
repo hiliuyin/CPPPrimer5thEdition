@@ -91,10 +91,27 @@ auto func2 = [upw = std::make_unique<T>()]()
 ```
 - 在C++11中，可以使用`std::bind`达到同样的效果，因为可以把对象移动构造进一个`std::bind`对象
 ```
+std::vector<std::string> data(10, "hello");
+auto func = std::bind(
+    [](const std::vector<std::string>& data)
+    {
+        for (auto it = data.cbegin(); it != data.cend(); ++it)
+            std::cout << *it << std::endl;
+    },
+    std::move(data));
 ```
- 
+```
+auto func2 = [upw = std::make_unique<T>()]() {
+    // do something on upw
+};
+// 在C++11中可以用std::bind模拟
+auto func3 = std::bind([](const std::unique_ptr<T>& ptr) { // do something on ptr },
+    std::make_unique<T>());
+```
 
-
-#####条款33: 
 #####条款34: 相较于`std::bind`, lambdas通常是更优的选择
-- C++14
+- C++11中，移动捕捉方式只能通过`std::bind`模拟
+- C++11中，lambdas是单态的，而`std::bind`是多态的
+- C++14中，lambdas引入了init capture从而支持移动捕捉方式
+- C++14中，lambdas的参数可以使用auto
+- 通常而言，lambdas的代码可读性比`std::bind`要好
