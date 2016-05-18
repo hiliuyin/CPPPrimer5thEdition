@@ -90,7 +90,7 @@ auto func2 = [upw = std::make_unique<T>()]()
     // do something on upw
 };
 ```
-- 在C++11中，可以使用`std::bind`达到同样的效果，因为可以把对象移动构造进一个`std::bind`对象
+- 在C++11中，可以使用`std::bind`达到同样的效果，因为可以把移动构造对象进一个`std::bind`对象
 ```
 std::vector<std::string> data(10, "hello");
 auto func = std::bind(
@@ -149,6 +149,10 @@ public:
 PolyWidget pw;
 auto boundPW = std::bind(pw, std::placeholders::_1);
 
+boundPW(2016);
+boundPW("hello world");
+
+auto boundPW = [](const auto& param) { pw(param); };
 boundPW(2016);
 boundPW("hello world");
 ```
