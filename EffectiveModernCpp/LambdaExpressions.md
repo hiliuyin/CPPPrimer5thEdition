@@ -1,4 +1,5 @@
-######条款31: 避免使用默认的捕捉方式
+
+#####条款31: 避免使用默认的捕捉方式
 - C++11中，lambda表达式支持两种捕捉方式：by-value 和 by-reference
 ```
 auto byValue = [=]() {};
@@ -112,6 +113,25 @@ auto func3 = std::bind([](const std::unique_ptr<T>& ptr) { // do something on pt
 #####条款34: 相较于`std::bind`, lambdas通常是更优的选择
 - C++11中，移动捕捉方式只能通过`std::bind`模拟
 - C++11中，lambdas是单态的，而`std::bind`是多态的
+```
+auto f = [](auto a, auto b) { cout << a << ' ' << b; } // 在C++11中，这是不可以的
+f("test", 1.2f);
+
+// 通过std::bind可以模拟这种实现
+struct foo
+{
+  typedef void result_type;
+
+  template < typename A, typename B >
+  void operator()(A a, B b)
+  {
+    cout << a << ' ' << b;
+  }
+};
+auto f = bind(foo(), _1, _2);
+f("test", 1.2f); // will print "test 1.2"
+
+```
 - C++14中，lambdas引入了init capture从而支持移动捕捉方式
 - C++14中，lambdas的参数可以使用auto
 - 通常而言，lambdas的代码可读性比`std::bind`要好
