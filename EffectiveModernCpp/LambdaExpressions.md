@@ -135,3 +135,20 @@ f("test", 1.2f); // will print "test 1.2"
 - C++14中，lambdas引入了init capture从而支持移动捕捉方式
 - C++14中，lambdas的参数可以使用auto
 - 通常而言，lambdas的代码可读性比`std::bind`要好
+```
+class PolyWidget
+{
+public:
+    template <typename T>
+    void operator()(const T& param)
+    {
+        std::cout << param << std::endl;
+    };
+};
+
+PolyWidget pw;
+auto boundPW = std::bind(pw, std::placeholders::_1);
+
+boundPW(2016);
+boundPW("hello world");
+```
