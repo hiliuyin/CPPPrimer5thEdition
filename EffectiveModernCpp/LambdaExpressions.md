@@ -169,3 +169,22 @@ boundPW("hello world");
 // 如果 Widget::operator() 是const函数
 auto boundPW = [pw](const auto& param) { pw(param); }; // C++11, 这样是可以的
 ```
+
+- by-value捕捉和mutable关键字
+```
+void test( const int &value )
+{
+    auto testConstRefMutableCopy = [value] () mutable {
+        value = 2; // compile error: Cannot assign to a variable captured by copy in a non-mutable lambda
+    };
+
+    int valueCopy = value;
+    auto testCopyMutableCopy = [valueCopy] () mutable {
+        valueCopy = 2; // compiles OK
+    };
+}
+```
+ + 在lambda表达式中的value，虽然是by-value捕捉，但是因为外部它被声明为const int&，所以在lambda表达式内部它的类型是const int
+ + lambda表达式被声明为mutable，并不能改变value的const属性
+ + 在C++14中，使用init-capture可以解决这个问题，即`[value = value]`
+ + init-capture中使用的是`auto`推断规则，因此value的const属性被抛弃
