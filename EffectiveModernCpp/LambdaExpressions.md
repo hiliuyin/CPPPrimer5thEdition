@@ -148,11 +148,24 @@ public:
 
 PolyWidget pw;
 auto boundPW = std::bind(pw, std::placeholders::_1);
-
 boundPW(2016);
 boundPW("hello world");
 
-auto boundPW = [](const auto& param) { pw(param); };
+// 在C++14中，用lambdas可以优雅的实现上述例子
+class PolyWidget
+{
+public:
+    template <typename T>
+    void operator()(const T& param) /* const */
+    {
+        std::cout << param << std::endl;
+    };
+};
+PolyWidget pw;
+auto boundPW = [pw = pw](const auto& param) { pw(param); }; // C++14
 boundPW(2016);
 boundPW("hello world");
+
+// 如果 Widget::operator() 是const函数
+auto boundPW = [pw](const auto& param) { pw(param); }; // C++11, 这样是可以的
 ```
