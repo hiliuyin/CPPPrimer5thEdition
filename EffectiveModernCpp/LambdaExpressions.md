@@ -8,7 +8,7 @@ auto byRef = [&]() {};
 - by-reference捕捉方式使用不当，会导致捕捉的引用无效(dangling)
 ```
 using FilterContainer = std::vector<std::function<bool(int)>>;
-Filter Container filters;
+FilterContainer filters;
 
 void addDivisorFilter()
 {
