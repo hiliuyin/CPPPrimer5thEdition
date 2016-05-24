@@ -186,3 +186,21 @@ int i;
 decltype((i)) d1 = i; // d1是int&
 decltype(i) d2; // d2是int
 ```
+
+- 一些有关`decltype`的细节
+ + 一个对象的类型包括：声明时的类型(declared type) 和 使用它时候的类型(effective type)
+ + `decltype`可以用来区分出 上述两种类型
+ + `decltype`用在变量名时，关注的是declared type
+ + `decltype`用在表达式时，关注的是effective type; 如果effective type是左值，那么返回的是左值引用
+```
+struct S { int i = 0; };
+const S s;
+const S* ps;
+decltype(s->i) x;     // x is const int; using declared type
+decltype(ps->i) y;    // y is int; using declared type
+decltype((ps->i)) z;  // z is const int&; using effective type
+
+const int f();
+decltype(f()) x = 0;  // x is const int
+decltype((f()) y = 0; // y si const int
+```
