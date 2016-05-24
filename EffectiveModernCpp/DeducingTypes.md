@@ -202,5 +202,5 @@ decltype((ps->i)) z;  // z is const int&; using effective type
 
 const int f();
 decltype(f()) x = 0;  // x is const int
-decltype((f()) y = 0; // y si const int
+decltype((f()) y = 0; // y is const int; 因为 f() 返回的是右值
 ```
