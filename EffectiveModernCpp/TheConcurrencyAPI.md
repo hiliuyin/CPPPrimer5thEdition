@@ -31,6 +31,7 @@ std::thread t(doAsyncWork);
 ```
 auto fut = std::async(std::launch::async | std::launch::deferred, f);
 ```
-- `std::async`如果是默认启动策略，那么究竟是异步执行还是同步执行，还是是否会执行，我们不能做任何假设。
+- `std::async`如果是默认启动策略，那么究竟是异步执行还是同步执行，还是不被执行，我们不能对此做任何假设。
+- 显式指定`std::launch::async`参数以保证任务被异步执行
 
-
+#####条款37: 
