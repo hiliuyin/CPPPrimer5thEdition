@@ -21,8 +21,16 @@ std::thread t(doAsyncWork);
 ```
 - `std::async`不一定会创建新的线程去执行异步任务，在默认的执行策略下，有可能会在当前线程中执行（异步的形式，实质上却是同步函数调用），在这种情况下，就会避免线程过载。
 
-- 在GUI线程中使用`std::async`，应该显式指定`std::launch::async`执行策略，否则可能将需要实时响应的GUI线程阻塞。
+- 在GUI线程中使用`std::async`，应该显式指定`std::launch::async`启动策略，否则可能将需要实时响应的GUI线程阻塞。
 
-#####条款36: 在确定需要异步执行的前提下，必须显式指定`std::launch::async`执行策略
-- 
+#####条款36: 如果确定需要异步执行，必须显式指定`std::launch::async`启动策略
+- `std::launch`定义了`std::async`的启动策略
+- `std::launch::async`启动策略：保证了任务在另一个线程中异步执行
+- `std::launch::deferred`启动策略：任务会被延迟执行，只有当`std::async`的返回值std::future的get或wait方法被调用的时候才会在该线程的上下文中同步执行并且阻塞该线程直到任务执行完成；如果get或wait没有被调用，那么任务永远不会被执行。
+- `std::async`的默认启动策略相当于：
+```
+auto fut = std::async(std::launch::async | std::launch::deferred, f);
+```
+- `std::async`如果是默认启动策略，那么究竟是异步执行还是同步执行，还是是否会执行，我们不能做任何假设。
+
 
