@@ -20,8 +20,8 @@ int doAsyncWork() noexcept;
 std::thread t(doAsyncWork);
 ```
 - `std::async`不一定会创建新的线程去执行异步任务，在默认的执行策略下，有可能会在当前线程中执行（异步的形式，实质上却是同步函数调用），在这种情况下，就会避免线程过载。
-
 - 在GUI线程中使用`std::async`，应该显式指定`std::launch::async`启动策略，否则可能将需要实时响应的GUI线程阻塞。
+- `std::thread`提供了`native_handle`方法可以返回底层的线程对象（例如pthread或者windows线程），有了它，我们可以通过底层的API去操作线程
 
 #####条款36: 如果确定需要异步执行，必须显式指定`std::launch::async`启动策略
 - `std::launch`定义了`std::async`的启动策略
