@@ -33,6 +33,37 @@ auto fut = std::async(std::launch::async | std::launch::deferred, f);
 ```
 - `std::async`如果是默认启动策略，那么究竟是异步执行还是同步执行，还是不被执行，我们不能对此做任何假设。
 - 显式指定`std::launch::async`参数以保证任务被异步执行
-- 如果`std::async`是默认启动策略或者`std::launch::deferred`启动策略，那么需要注意wait_for和wait_until的用法
+- 如果`std::async`是默认启动策略或者`std::launch::deferred`启动策略，那么需要注意get, wait, wait_for和wait_until的用法
+```
+void f()
+{
+    std::this_thread::sleep_for(std::chrono::seconds(1));
+}
+
+auto fut = std::async(std::launch::deferred, f);
+while (fut.wait_for(std::chrono::microseconds(100)) != std::future_status::ready)
+{
+    // infinite loop here, since wait_for always return std::future_status::deferred
+}
+```
+```
+// 将上述代码改成下面这样，就可以正确执行
+void f()
+{
+    std::this_thread::sleep_for(std::chrono::seconds(1));
+}
+
+auto fut = std::async(std::launch::deferred, f);
+if (fut.wait_for(std::chrono::seconds(0)) == std::future_status::deferred)
+{
+    fut.wait();
+}
+else
+{
+    while (fut.wait_for(std::chrono::microseconds(100)) != std::future_status::ready)
+    {
+    }
+}
+```
 
 #####条款37: 
