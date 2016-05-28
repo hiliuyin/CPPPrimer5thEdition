@@ -66,4 +66,12 @@ else
 }
 ```
 
-#####条款37: 
+#####条款37: 确保`std::thread`在所有路径上unjoinable
+- `std::thread`对象有joinable和unjoinable两种状态
+- 什么时候`std::thread`对象是joinable状态
+ ＋
+ ＋
+- 什么时候`std::thread`对象是unjoinable状态
+ + 通过默认构造函数创建的`std::thread`对象
+ + 
+ + 已经joined的`std::thread`对象
