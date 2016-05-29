@@ -80,8 +80,7 @@ else
  + 已经detached的`std::thread`对象，detach意味着`std::thread`对象和底层线程已经解绑
 
 - 一个很*重要*的问题：处于joinable状态的`std::thread`对象，如果该对象的析构函数被调用的话，那么会导致程序中止。
-- *Make std::threads unjoinable on all paths.*
-- 用RAII惯用法，可以优雅的解决这个问题
+- 用RAII惯用法，可以优雅的解决这个问题: **Make std::threads unjoinable on all paths.**
 ```
 class RAIIThread
 {
