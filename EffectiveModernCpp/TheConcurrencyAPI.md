@@ -68,7 +68,7 @@ else
 
 #####条款37: 确保`std::thread`在所有路径上unjoinable
 - `std::thread`对象有joinable和unjoinable两种状态
-- 什么时候`std::thread`对象是joinable状态
+- 什么时候`std::thread`对象是joinable状态: 一个joinable的`std::thread`对象对应着一个底层的线程
  + 正在运行或者准备运行的线程
  + 被阻塞的线程
  + 等待被调度的线程
@@ -78,3 +78,35 @@ else
  + 底层线程已经被移动绑定到其它`std::thread`对象
  + 已经joined的线程
  + 已经detached的`std::thread`对象，detach意味着`std::thread`对象和底层线程已经解绑
+
+- 一个很*重要*的问题：处于joinable状态的`std::thread`对象，如果该对象的析构函数被调用的话，那么会导致程序中止。
+- *Make std::threads unjoinable on all paths.*
+- 用RAII惯用法，可以优雅的解决这个问题
+```
+class RAIIThread
+{
+public:
+    enum class DtorAction { join, detach };
+    
+    RAIIThread(std::thread &&t, DtorAction act) : act_(act), t_(std::move(t)) {}
+    ~RAIIThread()
+    {
+        if (t_.joinable())
+        {
+            if (act_ == DtorAction::join)
+                t_.join();
+            else if (act_ == DtorAction::detach)
+                t_.detach();
+        }
+    }
+    
+    RAIIThread(RAIIThread &&t) = default;
+    RAIIThread& operator=(RAIIThread &&rhs) = default;
+    
+private:
+    DtorAction act_;
+    std::thread t_;
+};
+```
+
+#####条款38: Be aware of varying thread handle destructor behavior.
