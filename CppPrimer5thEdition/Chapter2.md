@@ -295,28 +295,21 @@ void\*类型指针可用于传递地址值（函数参数，函数返回值，�
 
 * 顶层const(top-level const)和 底层const(low-level const)
 
-> A top level const qualifier affects the object itself. Others are only relevant with pointers and references. They do not make the object const, and only prevent modification through a path using the pointer or reference. Thus:
-
-> ```
+ A top level const qualifier affects the object itself. Others are only relevant with pointers and references. They do not make the object const, and only prevent modification through a path using the pointer or reference. Thus:
+```
 char x;  char const* p = &x;
-> ```
-
-> This is not a top level const, and none of the objects are immutable. The expression \*p cannot be used to modify x, but other expressions can be; x is not const. For that matter `\*const_cast<char\*>( p ) =
-'x'` is legal and well defined.
+```
+This is not a top level const, and none of the objects are immutable. The expression \*p cannot be used to modify x, but other expressions can be; x is not const. For that matter `\*const_cast<char\*>( p ) = 'x'` is legal and well defined.
 But
-
-> ```
+```
 char const x = 'x';  char const* p = &x;
-> ```
-
-> This time, there is a top level const on x, so x is immutable. No expression is allowed to change it (even if const_cast is used). The compiler may put x in read only memory, and it may assume that the value of x never changes, regardless of what other code may do.
+```
+This time, there is a top level const on x, so x is immutable. No expression is allowed to change it (even if const_cast is used). The compiler may put x in read only memory, and it may assume that the value of x never changes, regardless of what other code may do.
 To give the pointer top level const, you'd write:
-
-> ```
+```
 char x = 'x';  char *const p = &x;
-> ```
-
-> In this case, p will point to x forever; any attempt to change this is undefined behavior (and the compiler may put p in read-only memory, or assume that \*p refers to x, regardless of any other code).
+```
+In this case, p will point to x forever; any attempt to change this is undefined behavior (and the compiler may put p in read-only memory, or assume that \*p refers to x, regardless of any other code).
 
 * 非引用类型的const对象初始化:const对象可以由非const对象初始化，反之亦可。
 
