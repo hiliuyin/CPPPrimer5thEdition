@@ -615,7 +615,6 @@ for (auto row : v)
 ```
 
 #####枚举(Enumerations)
-
 - 枚举成员是常量，必须用常量表达式初始化，枚举成员值可以不唯一（值可以重复）。
 
 ```
@@ -634,6 +633,15 @@ for (auto row : v)
 - 枚举类型的宽度是implementation-defined的，只要规定了其宽度能容纳下最大的枚举成员值:
  + C中char和integer类型都可以，选择权在于实现；
  + C++中则是int->unsigned int->long->unsigned long，依次选择。
+
+- C++11之前的plain enum有如下的缺点
+ + 可以被隐式转换为int
+ + 在所在的命名空间中，enum中的enumerator是可见的，会污染命名空间
+
+- C++11引入了enum class，替代之前的plain enum
+ + enum class不会被隐式转换为int
+ + enum class不会污染命名空间
+ + enum class可以被前置声明
 
 * **typedef**
 
