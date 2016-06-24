@@ -67,7 +67,6 @@ f(rx); // ignore &, then ignore top-level const, T is int, ParamType is int
 template <typename T> void f(T param);
 
 const char* const ptr = "hello world";
-
 f(ptr); // T is const char*, ParamType is const char*
 ```
 
