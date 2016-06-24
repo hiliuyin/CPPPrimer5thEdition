@@ -7,12 +7,12 @@
 ##### Value Initialization (值初始化)
 - 当一个变量初始化时，如果提供的是一个空的初始化式，那么执行值初始化
 - 值初始化的形式如下
- + 'T();' 
- + 'new T();'
- + 'Class::Class(...) : member() {...'
- + 'T{};'
- + 'new T{};'
- + 'Class::Class(...) : member{} {...'
+ + `T();` 
+ + `new T();`
+ + `Class::Class(...) : member() {...`
+ + `T{};`
+ + `new T{};`
+ + `Class::Class(...) : member{} {...`
 - 对于所有的标准容器（std::vector, std::list, etc.），如果我们创建该容器时候调用的是单个容器大小参数的构造函数，那么容器内所有元素将被值初始化。
 如果调用resize()，那么同样对于新增加的元素也是被值初始化。
 ```
