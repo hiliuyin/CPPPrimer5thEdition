@@ -1,5 +1,8 @@
 #####条款23: 理解`std::move`和`std::forward`
-- `std::move`和`std::forward`都是模板函数，`std::move`支持隐式实例化，`std::forward`必须显式实例化
+- `std::move`和`std::forward`都是模板函数，
+- `std::move`支持隐式实例化
+- `std::forward`必须显式实例化
+
 - `std::move`的实现，在C++14中，`std::move`是constexpr
 ```
 // TEMPLATE FUNCTION move
@@ -33,6 +36,8 @@ typename remove_reference<_Ty>::type&& _Arg) _NOEXCEPT
 ```
 - `std::move`执行无条件的右值转换
 - `std::forward`必须显式实例化，它的返回值是static_cast<T&&>(arg)，因此T绑定到什么类型决定了`std::forward`的返回值类型
+ + 如果T绑定到左值引用类型，那么返回值类型是左值引用
+ + 如果T绑定到非引用类型或者右值引用类型，那么返回值类型是右值引用
 ```
 class A
 {
