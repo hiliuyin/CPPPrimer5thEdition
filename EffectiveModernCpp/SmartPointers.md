@@ -224,12 +224,17 @@ public:
     Widget& operator=(Widget&& w);
 
 private:
-    struct WidgetImpl;
-    std::unique_ptr<WidgetImpl> impl_;
+    struct WidgetImpl; // Incomplete type
+    std::unique_ptr<WidgetImpl> impl_; // std::unique_ptr 支持Incomplete type 
 };
 
 // In Widget.cpp
-struct Widget::WidgetImpl {};
+struct Widget::WidgetImpl
+{
+    std::string name;
+    std::vector<double> data;
+    Gadget g1, g2, g3;
+};
 
 Widget::Widget() : impl_(std::make_unique<WidgetImpl>()) {} // WidgetImpl的完全定义必须可见
 
