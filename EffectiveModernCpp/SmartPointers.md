@@ -63,7 +63,22 @@ std::unique_ptr<Investment> makeInvestment()
 }
 std::shared_ptr<Investment> si = makeInvestment();
 ```
-
+-  为什么对`std::unique_ptr`进行sizeof的结果能和 raw pointer 一样大小
+```
+template <class _Tp, class _Dp = default_delete<_Tp> >
+class _LIBCPP_TYPE_VIS_ONLY unique_ptr
+{
+public:
+    typedef _Tp element_type;
+    typedef _Dp deleter_type;
+    typedef typename __pointer_type<_Tp, deleter_type>::type pointer;
+private:
+    __compressed_pair<pointer, deleter_type> __ptr_;
+...
+};
+```
+ + 因为`class _Dp = default_delete<_Tp>`是一个empty类，因此编译器可以实施base empty class optimization
+ + 关于base empty class optimization，参见 http://www.stroustrup.com/bs_faq2.html#sizeof-empty
 
 #### 条款19: 使用`std::shared_ptr`管理共享资源的对象
 - 相较于`std::unique_ptr`，`std::shared_ptr`是重量级的
