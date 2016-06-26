@@ -54,7 +54,7 @@ void foo()
 - `std::unique_ptr<T[]>`用于分配数组
 
 - `std::unique_ptr`非常适用于factory模式
-- 可以将`std::unique_ptr`右值转化为`std::shared_ptr`，`std::shared_ptr`的一个构造函数接受`std::unique_ptr`的右值引用
+- 可以将`std::unique_ptr`右值转化为`std::shared_ptr`，因为`std::shared_ptr`的一个构造函数接受`std::unique_ptr`的右值引用作为参数
 ```
 std::unique_ptr<Investment> makeInvestment()
 {
