@@ -517,3 +517,5 @@ private:
     char* data_;
 };
 ```
+- Copy-And-Swap Idiom
+http://stackoverflow.com/questions/3279543/what-is-the-copy-and-swap-idiom
