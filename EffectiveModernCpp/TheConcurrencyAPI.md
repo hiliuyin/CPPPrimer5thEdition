@@ -37,6 +37,8 @@ auto fut = std::async(std::launch::async | std::launch::deferred, f);
 - `std::async`如果是默认启动策略，那么究竟是异步执行还是同步执行，还是不被执行，我们不能对此做任何假设。
 - 显式指定`std::launch::async`参数以保证任务被异步执行
 - 如果`std::async`是默认启动策略或者`std::launch::deferred`启动策略，那么需要注意get, wait, wait_for和wait_until的用法
+ + 如果启动策略是`std::launch::deferred`，那么`std::future::wait_for`和`std::future::wait_until`会立即返回`std::future_status::deferred`，下面的例子展示了这个问题
+ + 如果启动策略是`std::launch::deferred`，对于`std::future::wait`则不存在这个问题，它会阻塞当前线程直到`std::future_status::ready`状态
 ```
 void f()
 {
@@ -71,11 +73,18 @@ else
 
 #####条款37: 确保`std::thread`在所有路径上unjoinable
 - `std::thread`对象有joinable和unjoinable两种状态
-- 什么时候`std::thread`对象是joinable状态: 一个joinable的`std::thread`对象对应着一个底层的线程
+
+- 什么时候`std::thread`对象是joinable状态: 一个joinable的`std::thread`对象对应着一个活动的(active)底层线程，即使该线程对象那个已经运行结束但还未join，也看作是joinable的
  + 正在运行或者准备运行的线程
  + 被阻塞的线程
  + 等待被调度的线程
  + 已经运行结束还未joined的线程
+
+- `std::thread::join`的用法
+ + 会阻塞当前线程，直到join对应的线程对象执行完毕
+ + 如果`this->get_id() == std::this_thread::get_id()`，则发生死锁
+ + join返回后，线程对象进入unjoinable状态
+ 
 - 什么时候`std::thread`对象是unjoinable状态
  + 通过默认构造函数创建的`std::thread`对象
  + 底层线程已经被移动绑定到其它`std::thread`对象
@@ -83,7 +92,7 @@ else
  + 已经detached的`std::thread`对象，detach意味着`std::thread`对象和底层线程已经解绑
 
 - 一个很*重要*的问题：处于joinable状态的`std::thread`对象，如果该对象的析构函数被调用的话，那么会导致程序中止。
-- 用RAII惯用法，可以优雅的解决这个问题: **Make std::threads unjoinable on all paths.**
+ + 用RAII惯用法，可以优雅的解决这个问题，即：Make std::threads unjoinable on all paths.
 ```
 class RAIIThread
 {
