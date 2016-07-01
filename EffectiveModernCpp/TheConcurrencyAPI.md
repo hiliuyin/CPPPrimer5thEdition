@@ -148,8 +148,7 @@ std::thread t(std::move(pt)); // std::packaged_task只支持移动，不支持�
 ......
 ```
 
-- 关于`std::promise`的文档
-http://stackoverflow.com/questions/11004273/what-is-stdpromise
+- 关于`std::promise`极好的解释：http://stackoverflow.com/questions/11004273/what-is-stdpromise
 
 
 
