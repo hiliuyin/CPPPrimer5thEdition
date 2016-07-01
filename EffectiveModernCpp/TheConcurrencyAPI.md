@@ -121,3 +121,35 @@ private:
 ```
 
 #####条款38: Be aware of varying thread handle destructor behavior.
+- C++11引入了模板类`std::future`用于存取异步执行线程的结果
+ + `std::future`只支持移动操作，不支持拷贝操作
+- 异步执行线程的结果，不能保存在callee（被调用线程）的`std::promise`处
+ + 因为在`std::future`被访问之前，callee就可能已经被销毁（线程结束）
+- 异步执行线程的结果，不能保存在caller（调用线程）的`std::future`
+ + `std::shared_future`用于多个线程对象访问
+ + `std::shared_future`可以由`std::future`创建，即使`std::future`中的线程执行结果是只支持移动的，因此`std::future`不能随意销毁
+
+- 有一块heap区域，称之为shared state，用于存储异步执行线程的结果
+
+- `std::future`的析构函数的行为准则
+ + The destructor for the last future referring to a shared state for a non-deferred task launched via std::async blocks until the task completes. In essence, the destructor for such a future does an implicit join on the thread on which the asynchronously executing task is running.
+ + The destructor for all other futures simply destroys the future object. For asynchronously running tasks, this is akin to an implicit detach on the underlying thread. For deferred tasks for which this is the final future, it means that the deferred task will never run.
+ + 好拗口的俩准则啊！
+ + 对于`std::launch::async`的thread，要么implicit join，要么implicit detach
+ + 对于`std::launch::deferred`的thread，直接销毁future对象，也就是该thread不会被执行
+ 
+- `std::packaged_task`提供了另外一种方式用于异步执行结果的返回
+```
+int calcValue();
+std::packaged_task<int()> pt(calcValue);
+auto fut = pt.get_future();
+
+std::thread t(std::move(pt)); // std::packaged_task只支持移动，不支持拷贝
+......
+```
+
+- 关于`std::promise`的文档
+http://stackoverflow.com/questions/11004273/what-is-stdpromise
+
+
+
