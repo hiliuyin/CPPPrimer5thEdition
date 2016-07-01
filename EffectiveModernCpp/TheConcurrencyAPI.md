@@ -100,7 +100,7 @@ public:
     enum class DtorAction { join, detach };
     
     RAIIThread(std::thread &&t, DtorAction act) : act_(act), t_(std::move(t)) {}
-    ~RAIIThread()
+    ~RAIIThread() // 析构函数中，将joinable的std::thread对象变为unjoinable状态，从而使得即使析构函数被调用，程序也不会中止
     {
         if (t_.joinable())
         {
