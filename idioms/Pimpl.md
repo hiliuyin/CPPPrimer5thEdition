@@ -1,5 +1,5 @@
-- pimpl 是 point to implementation 的缩写
-- 一种使用`std::unique_ptr`的pimpl的实现
+- Pimpl 是 point to implementation 的缩写
+- 一种使用`std::unique_ptr`的Pimpl的实现
 ```
 // In Widget.h
 class Widget
