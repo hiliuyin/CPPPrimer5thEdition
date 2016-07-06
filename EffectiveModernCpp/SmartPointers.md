@@ -218,9 +218,11 @@ class Widget
 {
 public:
     Widget();
-    ~Widget(); // 必须显式定义析构函数，因为编译器生成的destructor会发现WidgetImpl不是完全定义从而导致编译错误，但是不能在头文件中定义
+    ~Widget(); 
+    // 必须显式定义析构函数，因为编译器生成的destructor会发现WidgetImpl不是完全定义从而导致编译错误，但是不能在头文件中定义
     
-    Widget(Widget&& w); // 因为显式定义了析构函数，所以move constructor和move assignment operator必须显式定义，否则会被编译器定义为delete
+    Widget(Widget&& w); 
+    // 因为显式定义了析构函数，所以move constructor和move assignment operator必须显式定义，否则会被编译器定义为delete
     Widget& operator=(Widget&& w);
     
     Widget(const Widget& rhs); 
@@ -242,7 +244,8 @@ struct Widget::WidgetImpl
 
 Widget::Widget() : impl_(std::make_unique<WidgetImpl>()) {} // WidgetImpl的完全定义必须可见
 
-Widget::~Widget() = default; // 必须在*.cpp中定义，因为unique_ptr的销毁过程会调用Widget的析构函数，此时WidgetImpl完全定义必须是可见的
+Widget::~Widget() = default; 
+// 必须在*.cpp中定义，因为unique_ptr的销毁过程会调用Widget的析构函数，此时WidgetImpl完全定义必须是可见的
 
 Widget::Widget(Widget&& w) = default; // 因为unique_ptr本身支持移动语义，因此=default可以满足要求
 Widget& Widget::operator=(Widget&& w) = default;
