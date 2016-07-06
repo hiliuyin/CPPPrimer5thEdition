@@ -132,7 +132,7 @@ auto func1 = f;  // func1 is void(*)(int, double)
 auto& func2 = f; // func2 is void(&)(int, double)
 ```
 
-- 使用列表初始化会使auto类型推断和template类型推断变的不同
+- 使用列表初始化会使auto类型推断和template类型推断的规则变的有所不同
 ```
 auto x1 = 27; // 拷贝初始化，x1 is int
 auto x2(27);  // 直接初始化, x2 is int
