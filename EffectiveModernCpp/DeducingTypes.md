@@ -67,7 +67,7 @@ f(rx); // ignore &, then ignore top-level const, T is int, ParamType is int
 template <typename T> void f(T param);
 
 const char* const ptr = "hello world";
-f(ptr); // T is const char*, ParamType is const char*
+f(ptr); // ignore top-level const, T is const char*, ParamType is const char*
 ```
 
 - 如果模板类型实参是数组类型
