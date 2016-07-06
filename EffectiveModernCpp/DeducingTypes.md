@@ -144,13 +144,18 @@ auto x = {11, 23, 9}; // x is std::initializer_list<int>
 template <typename T> void f(T param);
 f({11, 23, 9}); // error, cannot deduce
 
+auto x = {11, 23, 9}; // x is std::initializer_list<int>
+f(x); // ok, T is deduced to std::initializer_list<int>
+
 template <typename T> void f(std::initializer_list<T> param);
 f({11, 23, 9}); // T is int, param is std::initializer_list<int>
 ```
 
+- 永远不要试图返回一个`std::initialzier_list`类型，不安全，因为`std::intializer_list`指向的存储空间有可能在栈上（如果列表的值不全是常量，一定在栈上）。跟不能返回局部变量的引用一样。 
+
 - C++14新引入了auto的用法，如果auto用在函数返回类型 或 lambda表达式的形参列表中，那么推断是按照template类型推断规则来处理的
 ```
-auto createInitList() { return {1, 2, 3}; } // error
+auto createInitList() { return {1, 2, 3}; } // error, auto作为函数返回类型时，永远不要直接返回braced-init-list
 
 std::vector<int> v;
 auto resetV = [&](const auto& newValue) { v = newValue; };
