@@ -4,11 +4,12 @@
 - 有关`std::move`
  + `std::move`支持隐式实例化
  + `std::move`的实现，在C++14中，`std::move`是constexpr
+ + `std::move`执行无条件的右值转换
 ```
 // TEMPLATE FUNCTION move
 template<class _Ty> inline
 constexpr
-typename remove_reference<_Ty>::type&&
+typename remove_reference<_Ty>::type&&  // 返回值类型永远是 typename remove_reference<_Ty>::type&&
 move(_Ty&& _Arg) _NOEXCEPT
 {	// forward _Arg as movable
    return (static_cast<typename remove_reference<_Ty>::type&&>(_Arg));
@@ -23,21 +24,20 @@ move(_Ty&& _Arg) _NOEXCEPT
 template<class _Ty> inline
 constexpr
 _Ty&& forward(
-typename remove_reference<_Ty>::type& _Arg) _NOEXCEPT
-{	// forward an lvalue as either an lvalue or an rvalue
+typename remove_reference<_Ty>::type& _Arg) _NOEXCEPT      // 参数是左值类型时，重载决议选择这个
+{	  // forward an lvalue as either an lvalue or an rvalue  // 返回值类型是左值引用或右值引用
     return (static_cast<_Ty&&>(_Arg));
 }
 
 template<class _Ty> inline
 constexpr
 _Ty&& forward(
-typename remove_reference<_Ty>::type&& _Arg) _NOEXCEPT
-{	// forward an rvalue as an rvalue
+typename remove_reference<_Ty>::type&& _Arg) _NOEXCEPT  // 参数是右值类型时，重载决议选择这个
+{	  // forward an rvalue as an rvalue                   // 返回值类型一定是右值引用
     static_assert(!is_lvalue_reference<_Ty>::value, "bad forward call");
     return (static_cast<_Ty&&>(_Arg));
 }
 ```
-- `std::move`执行无条件的右值转换
 - `std::forward`必须显式实例化，它的返回值是static_cast<T&&>(arg)，因此T绑定到什么类型决定了`std::forward`的返回值类型
  + 按照`perfect forwarding`的规则来决定返回值类型
  + 如果T绑定到左值引用类型，那么返回值类型是左值引用
