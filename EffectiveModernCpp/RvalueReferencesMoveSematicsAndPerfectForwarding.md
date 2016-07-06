@@ -1,9 +1,9 @@
 #####条款23: 理解`std::move`和`std::forward`
 - `std::move`和`std::forward`都是模板函数，
-- `std::move`支持隐式实例化
-- `std::forward`必须显式实例化
 
-- `std::move`的实现，在C++14中，`std::move`是constexpr
+- 有关`std::move`
+ + `std::move`支持隐式实例化
+ + `std::move`的实现，在C++14中，`std::move`是constexpr
 ```
 // TEMPLATE FUNCTION move
 template<class _Ty> inline
@@ -14,7 +14,10 @@ move(_Ty&& _Arg) _NOEXCEPT
    return (static_cast<typename remove_reference<_Ty>::type&&>(_Arg));
 }
 ```
-- `std::forward`的实现，`std::forward`有两种重载形式，在C++14中，`std::forward`是constexpr
+
+- 有关`std::forward`
+ + `std::forward`有两种重载形式，因此必须显式实例化
+ + `std::forward`的实现，在C++14中，`std::forward`是constexpr
 ```
 // TEMPLATE FUNCTION forward
 template<class _Ty> inline
@@ -36,6 +39,7 @@ typename remove_reference<_Ty>::type&& _Arg) _NOEXCEPT
 ```
 - `std::move`执行无条件的右值转换
 - `std::forward`必须显式实例化，它的返回值是static_cast<T&&>(arg)，因此T绑定到什么类型决定了`std::forward`的返回值类型
+ + 按照`perfect forwarding`的规则来决定返回值类型
  + 如果T绑定到左值引用类型，那么返回值类型是左值引用
  + 如果T绑定到非引用类型或者右值引用类型，那么返回值类型是右值引用
 ```
@@ -64,6 +68,6 @@ Widget w2(std::forward<Widget>(w1));  // r-value overload
 Widget w3(std::forward<Widget&>(w2)); // l-value overload
 ```
 
-- 一些及好的链接
+- 一些极好的链接
 http://stackoverflow.com/questions/3582001/advantages-of-using-forward
 http://stackoverflow.com/questions/3106110/what-are-move-semantics/11540204#11540204
