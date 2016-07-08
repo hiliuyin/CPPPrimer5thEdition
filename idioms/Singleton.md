@@ -1,5 +1,5 @@
-- 在C++11中，实现线程安全的Singleton变的简单很多，因为C++标准保证：
-> If control enters the declaration concurrently while the variable is being initialized, 
+- 在C++11中，实现线程安全的Singleton变的简单很多，因为C++标准保证 
+ + If control enters the declaration concurrently while the variable is being initialized, 
 the concurrent execution shall wait for completion of the initialization.
 ```
 class S
