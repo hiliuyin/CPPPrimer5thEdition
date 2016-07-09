@@ -3,7 +3,7 @@
 - `std::thread` 和 `std::async` 之间有很多需要特别关注的区别
 
 - 从操作系统的角度上看，`std::thread`可以映射到通常概念上的操作系统线程
-- `std::thread`是定义在std命名空间的类，因此它一定会创建一个新的线程对象(thread)
+- `std::thread`是定义在std命名空间的类，它一定会创建一个新的线程对象(thread)
 ```
 int doAsyncWork();
 std::thread t(doAsyncWork);
