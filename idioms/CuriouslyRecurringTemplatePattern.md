@@ -7,7 +7,7 @@ class Base
 {
     // 基类中的方法可以通过template访问派生类的成员
 };
-class Derived : public Base<Derived>
+class Derived : public Base<Derived> // Derived类的Base类模板特化的类型实参是Derived类，奇异递归(Curiously Recurring)
 {
     // ...
 };
@@ -15,12 +15,12 @@ class Derived : public Base<Derived>
 
 - CRTP的优点:
  + 编译期多态（静态多态），比通过虚函数实现的运行时多态（动态多态）的效率要高
- + 代码异常简洁，简化接口
+ + 代码异常简洁优雅，简化接口，代码复用
 
 - `std::enable_shared_from_this`的实现就是CRTP的实际应用
 ```
 template<class _Tp>
-class _LIBCPP_TYPE_VIS_ONLY enable_shared_from_this
+class enable_shared_from_this
 {
     mutable weak_ptr<_Tp> __weak_this_;
     
@@ -30,7 +30,7 @@ protected:
     enable_shared_from_this(enable_shared_from_this const&) _NOEXCEPT {}
     
     enable_shared_from_this& operator=(enable_shared_from_this const&) _NOEXCEPT
-        {return *this;}
+        { return *this; }
     
     ~enable_shared_from_this() {}
 
