@@ -50,7 +50,7 @@ void Widget::addFilter() const
     filters.emplace_back([divisorCopy](int value) { return value % divisorCopy == 0; });
 }
 ```
-- 在C++14中，使用generalized lambda capure可以解决上述问题
+- 在C++14中，使用generalized lambda capture可以解决上述问题
 ```
 void Widget::addFilter() const
 {
