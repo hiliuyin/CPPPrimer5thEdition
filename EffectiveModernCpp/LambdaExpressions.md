@@ -188,8 +188,8 @@ void test( const int &value )
  + lambda表达式被声明为mutable，并不能改变value的const属性
  + 在C++14中，使用init-capture可以解决这个问题，即`[value = value]`, init-capture中使用的是`auto`推断规则，因此value的const属性被抛弃
  + by-value捕捉，如果lambda表达式没有被声明为mutable，那么即使被by-value捕捉的外部变量不是const的，在lambda表达式内部，它还是const的
- ```
+```
 int x = 100;
 auto f1 = [=]() { x = 1000 }; // error
 auto f2 = [=]() mutable { x = 1000; }; // ok
- ```
+```
