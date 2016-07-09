@@ -487,7 +487,10 @@ class bar {
     /*为了保证bar的用户使用CreateXXXX来创建对象，还是应该不放过所有ctor*/
 
 public:
-    static bar *Create(size_t n) {return new bar[n];}
+    static bar *Create(size_t n) {return new bar[n];} // 即使n传入的是0，也是合法的
+        // When the value of the expression in a direct-new-declarator is zero, 
+        // the allocation function is called to allocate an array with no elements.
+
     static void Destroy(const bar *p) {delete[] p;}
     /*注，如果Destroy是non-static成员函数，一定要是const成员函数*/
 
@@ -501,3 +504,22 @@ public:
 new bar[n]的语义是先分配足够大的内存，然后构造n个bar对象并且返回首地址。
 如果构造到m个（m <= n）的时候遇到了一个异常，则需要将已经构造好的所有对象都析构掉然后回收内存最后rethrow该异常通知程序员。
 因此，new[]是需要生成代码来调用dtor的！
+
+#### QUIZ 3
+- 写一个只能在栈上创建，而不能在堆上创建的类
+```
+class NoHeap {
+protected:
+  static void * operator new(std::size_t);      // #1: To prevent allocation of scalar objects
+  static void * operator new [] (std::size_t);  // #2: To prevent allocation of array of objects
+};
+
+class NoHeapTwo : public NoHeap {
+};
+
+int main(void) {
+  new NoHeap;        // Not allowed because of #1
+  new NoHeap[1];     // Not allowed because of #2
+  new NoHeapTwo[10];  // Not allowed because of inherited protected new operator (#2).
+}
+```
