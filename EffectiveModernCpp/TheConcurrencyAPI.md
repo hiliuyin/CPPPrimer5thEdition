@@ -144,11 +144,64 @@ int calcValue();
 std::packaged_task<int()> pt(calcValue);
 auto fut = pt.get_future();
 
-std::thread t(std::move(pt)); // std::packaged_task只支持移动，不支持拷贝
+std::thread t(std::move(pt)); // std::packaged_task只支持移动操作，不支持拷贝操作
 ......
 ```
 
-- 关于`std::promise`极好的解释：http://stackoverflow.com/questions/11004273/what-is-stdpromise
+- 关于`std::promise`极好的解释：  
+http://stackoverflow.com/questions/11004273/what-is-stdpromise
+
+- `std::async`, `std::packaged_task` 和 `std::promise`提供了三种不同层级的方式用于异步操作
+
+- `std::async`是最方便直观的方式，通过这个模板函数的返回值即可得到其返回的future，但是究竟过程如何我们是无法控制的
+```
+auto fut = std::async(foo, 1.5, 'x', false);  // is a std::future<int>
+.....
+// 在某处，可以方便地得到异步执行的结果（当然根据`std::async`的启动策略，亦有可能是同步执行）
+auto res = fut.get();  // is an int
+```
+
+- `std::packaged_task`提供了一个比`std::async`更底层更灵活的方式，它生成了一个可以调用的对象，将究竟何时何地调用的决定权留给了用户
+```
+std::packaged_task<int(double, char, bool)> tsk(foo);
+auto fut = tsk.get_future();    // is a std::future<int>
+......
+// 在某处，用户可以灵活地通过`std::thread`对象执行
+std::thread thr(std::move(tsk), 1.5, 'x', false); // `std::packaged_task`对象只支持移动操作
+......
+// 同样，通过get获取future的结果
+auto res ＝ fut.get(); // is an int
+```
+
+- `std::promise`提供了最底层的方式，本质上`std::packaged_task`的实现也是使用了`std::promise`
+
+- 最简单直接的例子
+```
+int main()
+{
+    // future from a packaged_task
+    std::packaged_task<int()> task([](){ return 7; }); // wrap the function
+    std::future<int> f1 = task.get_future();  // get a future
+    std::thread(std::move(task)).detach(); // launch on a thread
+ 
+    // future from an async()
+    std::future<int> f2 = std::async(std::launch::async, [](){ return 8; });
+ 
+    // future from a promise
+    std::promise<int> p;
+    std::future<int> f3 = p.get_future();
+    std::thread( [&p]{ p.set_value_at_thread_exit(9); }).detach();
+ 
+    std::cout << "Waiting..." << std::flush;
+    f1.wait();
+    f2.wait();
+    f3.wait();
+    std::cout << "Done!\nResults are: "
+              << f1.get() << ' ' << f2.get() << ' ' << f3.get() << '\n';
+}
+```
+
+
 
 
 
