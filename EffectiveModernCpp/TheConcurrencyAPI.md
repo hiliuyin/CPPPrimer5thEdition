@@ -8,7 +8,7 @@
 int doAsyncWork();
 std::thread t(doAsyncWork);
 ```
-- `std::thread`支持移动构造和移动赋值，但是不支持拷贝构造和拷贝赋值，
+- `std::thread`支持移动构造和移动赋值，但是不支持拷贝构造和拷贝赋值
 
 - `std::async`是定义在std空间的模板函数，它的返回值类型是`std::future`
 ```
@@ -90,6 +90,21 @@ else
  + 底层线程已经被移动绑定到其它`std::thread`对象
  + 已经joined的线程
  + 已经detached的`std::thread`对象，detach意味着`std::thread`对象和底层线程已经解绑
+
+- `std::thread`对象勿忘detach或join，一种代码常用的写法
+``` 
+std::packaged_task<int()> task([](){ return 7; }); // wrap the function
+std::future<int> f1 = task.get_future();  // get a future
+std::thread(std::move(task)).detach(); // launch on a thread
+ 
+std::promise<int> p;
+std::future<int> f3 = p.get_future();
+std::thread( [&p]{ p.set_value_at_thread_exit(9); }).detach();
+ 
+std::cout << "Waiting..." << std::flush;
+f1.wait();
+f3.wait();
+```
 
 - 一个很*重要*的问题：处于joinable状态的`std::thread`对象，如果该对象的析构函数被调用的话，那么会导致程序中止。
  + 用RAII惯用法，可以优雅的解决这个问题，即：Make std::threads unjoinable on all paths.
