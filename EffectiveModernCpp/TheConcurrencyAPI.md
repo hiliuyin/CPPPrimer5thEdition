@@ -216,7 +216,10 @@ int main()
 }
 ```
 
+#####条款39: Consider void futures for one-shot event communication.
 
 
+
+#####条款40: Use `std::atomic` for concurrency, `volatile` for special memory
 
 
