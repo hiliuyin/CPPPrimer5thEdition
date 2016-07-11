@@ -404,3 +404,21 @@ int main()
 #####条款40: Use `std::atomic` for concurrency, `volatile` for special memory
 - C++11在语言层面上引入了`std::atomic`，有了这些原子操作，无锁（lock-free）并发编程成为了可能。
 - `std::atomic` is for data acccessed from multiple threads without using mutexes. It's a tool for writing concurrent software.
+
+##### MISCS
+- 只有单一资源轮候时，不会出现死锁；当有两个以上的资源轮候时，则有可能出现死锁。
+- `std::lock`使用了避免死锁的算法
+```
+void f()
+{
+    ......
+    // don't actually take the locks yet
+    std::unique_lock<std::mutex> lock1(from.m, std::defer_lock);
+    std::unique_lock<std::mutex> lock2(to.m, std::defer_lock);
+ 
+    // lock both unique_locks without deadlock
+    std::lock(lock1, lock2); 
+    // Locks the given Lockable objects lock1, lock2, ..., lockn using a deadlock avoidance algorithm to avoid deadlock.
+    ......
+}
+```
