@@ -280,6 +280,15 @@ int main()
     worker.join();
 }
 ```
+- 详细解释下`wait()`如何防止虚假唤醒
+```
+template< class Predicate >
+void wait( std::unique_lock<std::mutex>& lock, Predicate pred );
+// 相当于
+while (!pred()) {
+    wait(lock);
+}
+```
 
 - 使用`std::atomic`可以实现轮询（polling）机制的线程同步
 ```
