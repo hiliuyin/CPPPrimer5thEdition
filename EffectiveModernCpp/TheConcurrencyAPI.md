@@ -1,7 +1,9 @@
 #####条款35: 相较于`std::thread`，优先使用`std::async`
 - C++11的一个巨大进步就是在语言层面引入了支持多线程的标准库，从而使得C++程序员告别了从前必须依赖第三方线程库的时代
-- `std::thread` 和 `std::async` 之间有很多需要特别关注的区别
+程序员可以忽略平台上的差异，无需介意底层实现究竟是POSIX线程库还是其它，当然C++ API也提供了std::thread::native_handle
+获得底层线程库的native handler。与此同时，对于程序员而言，跨平台多线程程序开发要比从前简单明了了。
 
+- `std::thread` 和 `std::async` 之间有很多需要特别关注的区别
 - 从操作系统的角度上看，`std::thread`可以映射到通常概念上的操作系统线程
 - `std::thread`是定义在std命名空间的类，它一定会创建一个新的线程对象(thread)
 ```
@@ -217,6 +219,67 @@ int main()
 ```
 
 #####条款39: Consider void futures for one-shot event communication.
+- `std::condition_variable`是一种非常常用的多线程同步原语，阻塞一个或多个线程去等待某个条件的满足，当某个线程更改了条件并发出通知，这些阻塞的线程会被唤醒并且继续执行后续的操作。
+- `std::condition_variable`的用法(假设两个线程A和B)
+- 线程A (更改条件并发出通知)
+ + 获得mutex（可以通过`std::lock_guard`，RAII范式的实现）
+ + 在获得mutex的条件下，更改条件，例如某个变量
+ + 通知其它阻塞状态等待条件满足的线程，通过：notify_one 或 notify_all（通知时不需要在获得mutex的前提下）
+- 线程B (阻塞等待条件的满足)
+ + 获取mutex（通过`std::unique_lock<std::mutex>`）
+ + 调用wait，wait_for 或 wait_until。这些wait操作会把之前获取到的mutex释放，并且将线程B挂起进入阻塞状态。wait操作是原子的。
+ + 当条件变量被通知，超时或者虚假唤醒时，线程B被唤醒，并且重新获取到mutex，该操作也是原子的。因为存在虚假唤醒的情况，此时必须检查条件是否真正被满足。
+- 上面的描述有点拗口，还是读下面的代码去理解一下。
+```
+std::mutex m;
+std::condition_variable cv;
+std::string data;
+bool ready = false;
+bool processed = false;
+ 
+void worker_thread()
+{
+    // Wait until main() sends data
+    std::unique_lock<std::mutex> lk(m); // std::condition_variable必须和std::unique_lock<std::mutex>搭配使用
+    cv.wait(lk, []{return ready;});     // 使用了lambda表达式，很优雅的实现，同时解决了虚假唤醒问题 
+ 
+    // after the wait, we own the lock.
+    std::cout << "Worker thread is processing data\n";
+    data += " after processing";
+ 
+    // Send data back to main()
+    processed = true;
+    std::cout << "Worker thread signals data processing completed\n";
+ 
+    // Manual unlocking is done before notifying, to avoid waking up
+    // the waiting thread only to block again (see notify_one for details)
+    lk.unlock(); // 通知时不需要在获得mutex的前提下
+    cv.notify_one();
+}
+ 
+int main()
+{
+    std::thread worker(worker_thread);
+ 
+    data = "Example data";
+    // send data to the worker thread
+    {
+        std::lock_guard<std::mutex> lk(m);
+        ready = true;
+        std::cout << "main() signals data ready for processing\n";
+    }
+    cv.notify_one(); // 通知时不需要在获得mutex的前提下
+ 
+    // wait for the worker
+    {
+        std::unique_lock<std::mutex> lk(m); // std::condition_variable必须和std::unique_lock<std::mutex>搭配使用
+        cv.wait(lk, []{return processed;}); // 使用了lambda表达式，很优雅的实现，同时解决了虚假唤醒问题 
+    }
+    std::cout << "Back in main(), data = " << data << '\n';
+ 
+    worker.join();
+}
+```
 
 
 
