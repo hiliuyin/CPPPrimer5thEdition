@@ -91,22 +91,22 @@ else
  + 已经joined的线程
  + 已经detached的`std::thread`对象，detach意味着`std::thread`对象和底层线程已经解绑
 
-- `std::thread`对象勿忘detach或join，一种代码常用的写法
+- `std::thread`对象勿忘detach或join，一种代码常用的写法就是线程启动后立刻将`std::thread`对象和底层执行线程detach
 ``` 
-std::packaged_task<int()> task([](){ return 7; }); // wrap the function
-std::future<int> f1 = task.get_future();  // get a future
-std::thread(std::move(task)).detach(); // launch on a thread
+std::packaged_task<int()> task([](){ return 7; });
+std::future<int> f1 = task.get_future();
+std::thread(std::move(task)).detach(); // 线程启动后立刻detach
  
 std::promise<int> p;
 std::future<int> f3 = p.get_future();
-std::thread( [&p]{ p.set_value_at_thread_exit(9); }).detach();
+std::thread( [&p]{ p.set_value_at_thread_exit(9); }).detach(); // 线程启动后立刻detach
  
 std::cout << "Waiting..." << std::flush;
 f1.wait();
 f3.wait();
 ```
 
-- 一个很*重要*的问题：处于joinable状态的`std::thread`对象，如果该对象的析构函数被调用的话，那么会导致程序中止。
+- 一个很重要的问题：处于joinable状态的`std::thread`对象，如果该对象的析构函数被调用的话，那么会导致程序中止。
  + 用RAII惯用法，可以优雅的解决这个问题，即：Make std::threads unjoinable on all paths.
 ```
 class RAIIThread
