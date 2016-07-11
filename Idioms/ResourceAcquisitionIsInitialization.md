@@ -62,33 +62,30 @@ void X::bar()
 }
 ```
 
-- `std::lock_guard`就是RAII的在标准库中的应用
+- `std::lock_guard`就是RAII范式的在标准库中的应用
 ```
-int g_i = 0;
-std::mutex g_i_mutex;  // protects g_i
- 
-void safe_increment()
+template <class _Mutex>
+class _LIBCPP_TYPE_VIS_ONLY lock_guard
 {
-    std::lock_guard<std::mutex> lock(g_i_mutex);
-    ++g_i;
- 
-    std::cout << std::this_thread::get_id() << ": " << g_i << '\n';
- 
-    // g_i_mutex is automatically released when lock
-    // goes out of scope
-}
- 
-int main()
-{
-    std::cout << __func__ << ": " << g_i << '\n';
- 
-    std::thread t1(safe_increment);
-    std::thread t2(safe_increment);
- 
-    t1.join();
-    t2.join();
- 
-    std::cout << __func__ << ": " << g_i << '\n';
-}
+public:
+    typedef _Mutex mutex_type;
+
+private:
+    mutex_type& __m_;
+public:
+
+    _LIBCPP_INLINE_VISIBILITY
+    explicit lock_guard(mutex_type& __m)
+        : __m_(__m) {__m_.lock();}
+    _LIBCPP_INLINE_VISIBILITY
+    lock_guard(mutex_type& __m, adopt_lock_t)
+        : __m_(__m) {}
+    _LIBCPP_INLINE_VISIBILITY
+    ~lock_guard() {__m_.unlock();}
+
+private:
+    lock_guard(lock_guard const&);// = delete;
+    lock_guard& operator=(lock_guard const&);// = delete;
+};
 ```
 
