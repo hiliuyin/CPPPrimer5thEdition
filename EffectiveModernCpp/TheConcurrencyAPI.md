@@ -281,7 +281,116 @@ int main()
 }
 ```
 
+- 使用`std::atomic`可以实现轮询（polling）机制的线程同步
+```
+// 线程A
+std::atomic<bool> flag(false);
+...
+flag = true;
 
+// 线程B
+...
+while (!flage)); // 轮询机制（polling）
+...
+```
+
+- 用`std::condition_variable`亦可以实现类似效果的线程同步
+```
+// 线程A
+std::condition_variable cv;
+std::mutex m;
+
+bool flag(false); // 不再需要`std::atomic`
+...
+{
+    std::lock_guard<std::mutex> g(m);  // 获得mutex
+    flag = true;                       // 更改条件
+    // destructor释放mutex
+}
+cv.notify_one(); // 通知线程B
+
+// 线程B
+{
+    std::unique_lock<std::mutex> lk(m); // 获得mutex
+    cv.wait(lk, [] { return flag; });
+    // 释放mutx并阻塞线程B（原子操作），等待条件满足，当条件满足时，重新获得mutex（原子操作）
+    // 通过lambda表达式优雅的解决了虚假唤醒问题
+    ...
+}
+...
+```
+
+- 使用`std::future`和`std::promise`可以实现上述效果的线程同步
+```
+std::promise<void> p;
+// 线程A
+...
+p.set_value();
+...
+// 线程B
+...
+p.get_future().wait();
+...
+```
+- 从cppreference上看到的很好的例子
+```
+int main()
+{
+    std::istringstream iss_numbers{"3 4 1 42 23 -23 93 2 -289 93"};
+    std::istringstream iss_letters{" a 23 b,e a2 k k?a;si,ksa c"};
+ 
+    std::vector<int> numbers;
+    std::vector<char> letters;
+    std::promise<void> numbers_promise, letters_promise;
+ 
+    auto numbers_ready = numbers_promise.get_future();
+    auto letter_ready = letters_promise.get_future();
+ 
+    std::thread value_reader([&]
+    {
+        // I/O operations.
+        std::copy(std::istream_iterator<int>{iss_numbers},
+                  std::istream_iterator<int>{},
+                  std::back_inserter(numbers));
+ 
+        //Notify for numbers.
+        numbers_promise.set_value();
+ 
+        std::copy_if(std::istreambuf_iterator<char>{iss_letters},
+                     std::istreambuf_iterator<char>{},
+                     std::back_inserter(letters),
+                     ::isalpha);
+ 
+        //Notify for letters.
+        letters_promise.set_value();
+    });
+ 
+ 
+    numbers_ready.wait();
+ 
+    std::sort(numbers.begin(), numbers.end());
+ 
+    if (letter_ready.wait_for(std::chrono::seconds(1)) ==
+            std::future_status::timeout)
+    {
+        //output the numbers while letters are being obtained.
+        for (int num : numbers) std::cout << num << ' ';
+        numbers.clear(); //Numbers were already printed.
+    }
+ 
+    letter_ready.wait();
+    std::sort(letters.begin(), letters.end());
+ 
+    //If numbers were already printed, it does nothing.
+    for (int num : numbers) std::cout << num << ' ';
+    std::cout << '\n';
+ 
+    for (char let : letters) std::cout << let << ' ';
+    std::cout << '\n';
+ 
+    value_reader.join();
+}
+```
 
 #####条款40: Use `std::atomic` for concurrency, `volatile` for special memory
 
