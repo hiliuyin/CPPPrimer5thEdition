@@ -402,5 +402,5 @@ int main()
 ```
 
 #####条款40: Use `std::atomic` for concurrency, `volatile` for special memory
-
+- C++11在语言层面上引入了`std::atomic`，有了这些原子操作，无锁（lock-free）并发编程成为了可能。
 
