@@ -210,6 +210,8 @@ auto pw = std::make_shared<Widget>(); // 一次分配所有内存(包括管理�
 processWidget(std::shared_ptr<Widget>(new Widget), computePriority()); // 非异常安全
 processWidget(std::make_shared<Widget>(), computePriority()); // 异常安全
 ```
+- `std::make_shared`和`std::make_unique`
+May throw std::bad_alloc or any exception thrown by the constructor of T. If an exception is thrown, this function has no effect.
 
 ####条款22: 当使用Pimpl惯用法时，必须将构造函数和析构函数定义在*.cpp文件中
 ```
