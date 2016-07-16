@@ -193,3 +193,49 @@ int x = 100;
 auto f1 = [=]() { x = 1000 }; // error
 auto f2 = [=]() mutable { x = 1000; }; // ok
 ```
+
+##### Miscs
+- lambda本质上就是一个创建在栈上的没有类型的C++对象，和其它的C++对象一样
+- lambda会创建一个栈上的临时对象，因此可以用它去初始化变量
+```
+auto lamb = [](){return 0;};
+```
+- lambda作为栈上对象，和其它对象一样，也有constructor/destructor；
+对于capture list不为空的lambda，其捕获的变量会作为这个栈上对象的成员存在着。
+
+- lambda亦可以去创建`std::function`对象，`std::function`对象会拥有lambda捕获变量的拷贝
+```
+auto func_lamb = std::function<int()>(lamb);
+auto func_lamb_ptr = new std::function<int()>(lamb); // 亦可以创建在堆上
+```
+
+- `std::function`是值语义的，但是支持移动操作
+
+- lambda表达式在capture list为空的情况下可以转换为函数指针，但是并不意味着它就是函数指针
+
+> + The closure type for a lambda-expression with no lambda-capture has a public non-virtual non-explicit const conversion function to pointer to function having the same parameter and return types as the closure type’s function call operator. The value returned by this conversion function shall be the address of a function that, when invoked, has the same effect as invoking the closure type’s function call operator.
+
+```
+void f1(int (*)(int)) {}
+void f2(char (*)(int)) {}
+void h(int (*)(int)) {}  // #1
+void h(char (*)(int)) {} // #2
+auto glambda = [](auto a) { return a; };
+f1(glambda); // ok
+f2(glambda); // error: not convertible
+h(glambda);  // ok: calls #1 since #2 is not convertible
+ 
+int& (*fpi)(int*) = [](auto* a)->auto& { return *a; }; // ok
+```
+
+- 每个lambda表达式的类型都是完全不同的，即使它们的签名完全一致，即使两者一字不差，
+因此如果想把lambda表达式放入到标准库容器，例如`std::vector`，那么可以使用`std::function`或者其它东东。
+```
+auto ignore = [&]() { return 10; };
+std::vector<decltype(ignore)> v;
+v.push_back([&]() { return 100; }); // error!
+-------------------------------------------
+std::vector<std::function<int()>> functors;
+functors.push_back([&] { return 100; });
+functors.push_back([&] { return 10; });
+```
