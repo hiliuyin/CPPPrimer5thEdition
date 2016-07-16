@@ -70,6 +70,7 @@ Widget w3(std::forward<Widget&>(w2)); // l-value overload
 
 - 有了`perfect forwarding`，C++11的标准库容器（例如`std::vector`）增加了新的API：`emplace()`和`emplace_back()`
 本质上，这些API利用了`perfect forwarding`，能够直接在容器中构造对象，而无需有临时对象和拷贝对象的开销。
+毕竟即使再聪明的编译器，使用`insert()`和`push_back()`的拷贝/移动的开销总归无法避免。
 
 - 一些极好的链接  
 http://stackoverflow.com/questions/3582001/advantages-of-using-forward
