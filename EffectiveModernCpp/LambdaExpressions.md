@@ -204,8 +204,9 @@ auto lamb = [](){return 0;};
 对于capture list不为空的lambda，其捕获的变量会作为这个栈上对象的成员存在着。
 
 - lambda实现了一种closure（闭包）  
-> A closure (also lexical closure, function closure or function value) is a function together with
-a referencing environment for the non-local variables of that function.
+> + A closure (also lexical closure, function closure or function value) is a function together with
+a referencing environment for the non-local variables of that function. (Wiki)
+> + A "closure" is an expression (typically a function) that can have free variables together with an environment that binds those variables (that "closes" the expression). (JavaScript)
 
 - lambda亦可以去创建`std::function`对象，`std::function`对象会拥有lambda捕获变量的拷贝
 ```
