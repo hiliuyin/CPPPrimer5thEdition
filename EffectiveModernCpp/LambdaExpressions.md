@@ -203,6 +203,10 @@ auto lamb = [](){return 0;};
 - lambda作为栈上对象，和其它对象一样，也有constructor/destructor；
 对于capture list不为空的lambda，其捕获的变量会作为这个栈上对象的成员存在着。
 
+- lambda实现了一种closure（闭包）  
+> A closure (also lexical closure, function closure or function value) is a function together with
+a referencing environment for the non-local variables of that function.
+
 - lambda亦可以去创建`std::function`对象，`std::function`对象会拥有lambda捕获变量的拷贝
 ```
 auto func_lamb = std::function<int()>(lamb);
