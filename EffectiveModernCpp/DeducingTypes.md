@@ -4,7 +4,7 @@ template <typename T> void f(ParamType param);
 f(expr); // 推断T和ParamType的类型
 ```
 - ParamType类型为引用或者指针，但不是Universal Reference
- + 如果expr的类型是引用，那么忽略掉引用，而使用引用对象的类型
+ + 如果expr的类型是引用，那么忽略掉引用，而使用被引用对象的类型
 ```
 template <typename T> void f1(T& param);
 template <typename T> void f2(const T& param);
@@ -49,7 +49,7 @@ f3(px);  // T is const int, ParamType is const int*
 ```
  
 - ParamType 既不是指针也不是引用
- + 如果expr的类型是引用，那么忽略掉引用，而使用引用对象的类型
+ + 如果expr的类型是引用，那么忽略掉引用，而使用被引用对象的类型
  + 忽略top-level cv-qualifier
 ```
 template <typename T> void f(T param);
