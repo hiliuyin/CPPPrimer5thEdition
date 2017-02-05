@@ -185,9 +185,9 @@ void test( const int &value )
 }
 ```
  + 在lambda表达式中的value，虽然是by-value捕捉，但是因为外部它被声明为const int&，所以在lambda表达式内部它的类型是const int
- + lambda表达式被声明为mutable，并不能改变value的const属性
- + 在C++14中，使用init-capture可以解决这个问题，即`[value = value]`, init-capture中使用的是`auto`推断规则，因此value的const属性被抛弃
- + by-value捕捉，如果lambda表达式没有被声明为mutable，那么即使被by-value捕捉的外部变量不是const的，在lambda表达式内部，它还是const的
+ + lambda表达式被声明为mutable，并不能改变value的top-level const属性
+ + 在C++14中，使用init-capture可以解决这个问题，即`[value = value]`, init-capture中使用的是`auto`推断规则，因此value的top-level const属性被抛弃
+ + by-value捕捉，如果lambda表达式没有被声明为mutable，那么即使被by-value捕捉的外部变量不是top-level const的，在lambda表达式内部，它还是top-level const的
 ```
 int x = 100;
 auto f1 = [=]() { x = 1000 }; // error
@@ -207,6 +207,7 @@ auto lamb = [](){return 0;};
 > + A closure (also lexical closure, function closure or function value) is a function together with
 a referencing environment for the non-local variables of that function. (Wiki)
 > + A "closure" is an expression (typically a function) that can have free variables together with an environment that binds those variables (that "closes" the expression). (JavaScript)
+> + 闭包中的闭不是“封闭内部状态”，而是“封闭外部状态”，一个函数如何封闭外部状态呢，当外部状态的scope失效时，还有一份留在内部状态中。延长了作用域链的叫闭包。对C++而言，当lambda表达式创建的时候，会拷贝一份引用的变量，以此实现内部状态和外部状态的隔离。
 
 - lambda亦可以去创建`std::function`对象，`std::function`对象会拥有lambda捕获变量的拷贝
 ```
