@@ -161,6 +161,25 @@ std::vector<int> v;
 auto resetV = [&](const auto& newValue) { v = newValue; };
 resetV({1, 2, 3}); // error
 ```
+```
+struct Data { 
+    int value; 
+    Data() {value=1;} 
+}; 
+  
+class MyClass { 
+    Data data; 
+public: 
+    Data& getData() {return data;}         
+}; 
+  
+int main(int argc, char** argv) { 
+    MyClass c; 
+    auto data = c.getData(); // auto& data = c.getData();
+    data.value = 2; 
+    return 0; 
+} 
+```
 
 ####条款3: 理解decltype
 - 相较于auto类型推断和template类型推断，decltype的类型推断规则要简化清晰很多；通常情况下，decltype类型推断不会改变用于推断的类型
