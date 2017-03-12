@@ -95,6 +95,11 @@ template <typename T> void f2(T& param);
 f1(someFunc); // T and ParamType is void(*)(int, double)
 f2(someFunc); // T is void (int, double), and ParamType is void (&)(int, double);
 ```
+- Things to Remember
+ + During template type deduction, arguments that are references are treated as non-references, i.e., their reference-ness is ignored.
+ + When deducing types for universal reference parameters, lvalue arguments get special treatment.
+ + When deducing types for by-value parameters, const and/or volatile arguments are treated as non-const and non-volatile.
+ + During template type deduction, arguments that are array or function names decay to pointers, unless they're used to initialize references.
 
 ####条款2: 理解auto类型推断
 - 通常情况下，template类型推断的规则可以应用于auto类型推断：可以把auto看作T，auto对象的类型指示符(type specifier)看作ParamType
@@ -181,6 +186,9 @@ int main(int argc, char** argv) {
     return 0; 
 } 
 ```
+- Things to Remember
+ + auto type deduction is usually the same as template type deduction, but auto type deduction assumes that a braced initializer represents a std::initializer_list, and template type deduction doesn't.
+ + auto in a function return type or a lambda parameter implies template type deduction, not auto type deduction.
 
 ####条款3: 理解decltype
 - 相较于auto类型推断和template类型推断，decltype的类型推断规则要简化清晰很多；通常情况下，decltype类型推断不会改变用于推断的类型
@@ -228,3 +236,7 @@ const int f();
 decltype(f()) x = 0;  // x is const int
 decltype((f()) y = 0; // y is const int; 因为 f() 返回的是右值
 ```
+- Things to Remember
+ + decltype almost always yields the type of a variable or expression without any modifications.
+ + For lvalue expressions of type T other than names, decltype always reports a type of T&.
+ 
