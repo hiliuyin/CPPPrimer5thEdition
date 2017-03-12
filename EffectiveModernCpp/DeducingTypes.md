@@ -161,6 +161,7 @@ std::vector<int> v;
 auto resetV = [&](const auto& newValue) { v = newValue; };
 resetV({1, 2, 3}); // error
 ```
+- 一个代码中的例子：
 ```
 struct Data { 
     int value; 
