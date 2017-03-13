@@ -52,8 +52,7 @@ f3(px);  // T is const int, ParamType is const int*
  
 - ParamType 既不是指针也不是引用
  + 如果expr的类型是引用，那么忽略掉引用，而使用被引用对象的类型
- + 忽略top-level cv-qualifier
- + A top level const qualifier affects the object itself. Others are only relevant with pointers and references. They do not make the object const, and only prevent modification through a path using the pointer or reference.
+ + 忽略top-level cv-qualifier. A top level const qualifier affects the object itself. Others are only relevant with pointers and references. They do not make the object const, and only prevent modification through a path using the pointer or reference.
 ```
 template <typename T> void f(T param);
 
