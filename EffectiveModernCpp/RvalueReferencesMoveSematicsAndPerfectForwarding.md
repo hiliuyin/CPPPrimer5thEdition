@@ -79,5 +79,5 @@ Widget w3(std::forward<Widget&>(w2)); // l-value overload
 
 - 一些极好的链接  
 http://stackoverflow.com/questions/3582001/advantages-of-using-forward
-http://stackoverflow.com/questions/3106110/what-are-move-semantics/11540204#11540204
-http://stackoverflow.com/questions/5481539/what-does-t-double-ampersand-mean-in-c11/5481588#5481588
+http://stackoverflow.com/questions/3106110/what-are-move-semantics
+http://stackoverflow.com/questions/5481539/what-does-t-double-ampersand-mean-in-c11
