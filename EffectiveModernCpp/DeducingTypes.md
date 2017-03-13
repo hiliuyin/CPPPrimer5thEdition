@@ -31,6 +31,7 @@ f3(px);  // T is const int, ParamType is const int*
  + Universal Reference 在标准中已经重新命名为 Forwarding Reference
  + 在函数模板类型参数列表中，T&&表示Universal Reference
  + When the function parameter type is of the form T&& where T is a template parameter, and the function argument is an lvalue of type A, the type A& is used for template argument deduction.
+ + "[given] a type TR that is a reference to a type T, an attempt to create the type “lvalue reference to cv TR” creates the type “lvalue reference to T”, while an attempt to create the type “rvalue reference to cv TR” creates the type TR."
  + 引用折叠的规则:  
  T& &   -> T&  
  T&& &  -> T&  
