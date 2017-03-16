@@ -72,6 +72,23 @@ Widget w3(std::forward<Widget&>(w2)); // l-value overload
 本质上，这些API利用了`perfect forwarding`，能够直接在容器中构造对象，而无需有临时对象和拷贝对象的开销。
 毕竟即使再聪明的编译器，使用`insert()`和`push_back()`的拷贝/移动的开销总归无法避免。
 
+- What are rvalues, lvalues, xvalues, glvalues, and prvalues?
+ + An lvalue (so-called, historically, because lvalues could appear on the left-hand side of an assignment expression) designates a function or an object. [Example: If E is an expression of pointer type, then *E is an lvalue expression referring to the object or function to which E points. As another example, the result of calling a function whose return type is an lvalue reference is an lvalue.]
+ + An xvalue (an “eXpiring” value) also refers to an object, usually near the end of its lifetime (so that its resources may be moved, for example). An xvalue is the result of certain kinds of expressions involving rvalue references. [Example: The result of calling a function whose return type is an rvalue reference is an xvalue.]
+ + A glvalue (“generalized” lvalue) is an lvalue or an xvalue.
+ + An rvalue (so-called, historically, because rvalues could appear on the right-hand side of an assignment expression) is an xvalue, a temporary object or subobject thereof, or a value that is not associated with an object.
+ + A prvalue (“pure” rvalue) is an rvalue that is not an xvalue. [Example: The result of calling a function whose return type is not a reference is a prvalue]
+        expressions
+          /     \
+         /       \
+        /         \
+    glvalues   rvalues
+      /  \       /  \
+     /    \     /    \
+    /      \   /      \
+lvalues   xvalues   prvalues
+
+
 - Important rvalue reference properties:
  + For overload resolution, lvalues prefer binding to lvalue references and rvalues prefer binding to rvalue references. Hence why temporaries prefer invoking a move constructor / move assignment operator over a copy constructor / assignment operator.
  + rvalue references will implicitly bind to rvalues and to temporaries that are the result of an implicit conversion. i.e. float f = 0f; int&& i = f; is well formed because float is implicitly convertible to int; the reference would be to a temporary that is the result of the conversion.
