@@ -82,3 +82,4 @@ http://stackoverflow.com/questions/3582001/advantages-of-using-forward
 http://stackoverflow.com/questions/3106110/what-are-move-semantics
 http://stackoverflow.com/questions/5481539/what-does-t-double-ampersand-mean-in-c11
 http://stackoverflow.com/questions/3279543/what-is-the-copy-and-swap-idiom
+http://stackoverflow.com/questions/3601602/what-are-rvalues-lvalues-xvalues-glvalues-and-prvalues
