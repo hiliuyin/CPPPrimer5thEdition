@@ -78,6 +78,7 @@ Widget w3(std::forward<Widget&>(w2)); // l-value overload
  + A glvalue (“generalized” lvalue) is an lvalue or an xvalue.
  + An rvalue (so-called, historically, because rvalues could appear on the right-hand side of an assignment expression) is an xvalue, a temporary object or subobject thereof, or a value that is not associated with an object.
  + A prvalue (“pure” rvalue) is an rvalue that is not an xvalue. [Example: The result of calling a function whose return type is not a reference is a prvalue]
+ 
         expressions
           /     \
          /       \
