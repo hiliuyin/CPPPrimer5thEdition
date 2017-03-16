@@ -245,3 +245,5 @@ std::vector<std::function<int()>> functors;
 functors.push_back([&] { return 100; });
 functors.push_back([&] { return 10; });
 ```
+- Useful links:
+http://stackoverflow.com/questions/7627098/what-is-a-lambda-expression-in-c11
