@@ -422,3 +422,6 @@ void f()
     ......
 }
 ```
+
+- C++11内存模型
+http://stackoverflow.com/questions/6319146/c11-introduced-a-standardized-memory-model-what-does-it-mean-and-how-is-it-g
