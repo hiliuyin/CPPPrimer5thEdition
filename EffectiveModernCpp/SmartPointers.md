@@ -262,3 +262,6 @@ Widget& Widget::operator=(const Widget& rhs)
     return *this;
 }
 ```
+
+- miscs
+http://stackoverflow.com/questions/6012157/is-stdunique-ptrt-required-to-know-the-full-definition-of-t/
