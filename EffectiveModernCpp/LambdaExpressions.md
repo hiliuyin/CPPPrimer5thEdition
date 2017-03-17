@@ -203,7 +203,29 @@ auto lamb = [](){return 0;};
 - lambda作为栈上对象，和其它对象一样，也有constructor/destructor；
 对于capture list不为空的lambda，其捕获的变量会作为这个栈上对象的成员存在着。
 
-- lambda实现了一种closure（闭包）  
+- lambda只是匿名函子（anonymous functor）的语法糖
+```
+// In C++03
+namespace {
+  struct f {
+    void operator()(int) {
+      // do something
+    }
+  };
+}
+
+void func(std::vector<int>& v) {
+  f f;
+  std::for_each(v.begin(), v.end(), f);
+}
+```
+
+```
+// In C++11
+std::for_each(v.begin(), v.end(), [](int) { /* do something here*/ });
+```
+
+- lambda实现了一种closure（闭包）
 > + A closure (also lexical closure, function closure or function value) is a function together with
 a referencing environment for the non-local variables of that function. (Wiki)
 > + A "closure" is an expression (typically a function) that can have free variables together with an environment that binds those variables (that "closes" the expression). (JavaScript)
