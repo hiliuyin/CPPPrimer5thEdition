@@ -10,10 +10,14 @@
 template <typename T>
 void remove(std::vector<T>& v, const T& item)
 {
-    std::erase(std::remove(v.begin(), v.end(), item), v.end()); // std::remove算法不会使v.end()失效
+    v.erase(std::remove(v.begin(), v.end(), item), v.end()); // std::remove算法不会使v.end()失效
 }
 
 std::vector<int> v;
 ......
 remove(v, 99); // 删除掉所有值等于99的元素
+```
+
+```
+v.erase(std::remove_if(v.begin(), v.end(), [](int x){ return x == 99; }), v.end());
 ```
