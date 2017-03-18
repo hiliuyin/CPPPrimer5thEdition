@@ -20,6 +20,7 @@ iterator erase( const_iterator first, const_iterator last ); // (since C++11)
 
 - 当用reverse_iterator遍历容器时，当调用只接受iterator为参数的函数时，需要特别注意
 ```
+// 删除vector里面的所有非零元素
 std::vector<int> v = {-1, 0, 1, 2, 3, 4, 5, 6};
 for (auto rit = v.rbegin(); rit != v.rend(); ) {
     if (*rit != 0) {
@@ -28,4 +29,8 @@ for (auto rit = v.rbegin(); rit != v.rend(); ) {
         ++rit;
     }
 }
+
+// 优雅高效的方法
+// remove-erase idiom
+v.erase(std::remove_if(v.begin(), v.end(), [](int x){return x != 0;}), v.end());
 ```
