@@ -20,5 +20,12 @@ iterator erase( const_iterator first, const_iterator last ); // (since C++11)
 
 - 当用reverse_iterator遍历容器时，当调用只接受iterator为参数的函数时，需要特别注意
 ```
-
+std::vector<int> v = {-1, 0, 1, 2, 3, 4, 5, 6};
+for (auto rit = v.rbegin(); rit != v.rend(); ) {
+    if (*rit != 0) {
+        rit = std::reverse_iterator<std::vector<int>::iterator>(v.erase(std::next(rit).base()));
+    } else {
+        ++rit;
+    }
+}
 ```
