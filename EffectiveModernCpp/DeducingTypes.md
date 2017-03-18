@@ -26,9 +26,9 @@ const int *px = &x;
 f3(&x);  // T is int, ParamType is int*
 f3(px);  // T is const int, ParamType is const int*
 ```
-
+  
 - ParamType类型是Universal Reference
- + Universal Reference 在标准中已经重新命名为 Forwarding Reference
+ Universal Reference 在标准中已经重新命名为 Forwarding Reference
  + 在函数模板类型参数列表中，T&&表示Universal Reference
  + When the function parameter type is of the form T&& where T is a template parameter, and the function argument is an lvalue of type A, the type A& is used for template argument deduction. 
  + 引用折叠的规则: "[given] a type TR that is a reference to a type T, an attempt to create the type “lvalue reference to cv TR” creates the type “lvalue reference to T”, while an attempt to create the type “rvalue reference to cv TR” creates the type TR." 
@@ -49,7 +49,7 @@ f3(px);  // T is const int, ParamType is const int*
  f(rx); // T is const int&, ParamType is const int&
  f(27); // T is int, ParamType is int&&
 ```
- 
+
 - ParamType 既不是指针也不是引用
  + 如果expr的类型是引用，那么忽略掉引用，而使用被引用对象的类型
  + 忽略top-level cv-qualifier. A top level const qualifier affects the object itself. Others are only relevant with pointers and references. They do not make the object const, and only prevent modification through a path using the pointer or reference.
@@ -220,7 +220,7 @@ int i;
 decltype((i)) d1 = i; // d1是int&
 decltype(i) d2; // d2是int
 ```
-
+  
 - 一些有关`decltype`的细节
  + 一个对象的类型包括：声明时的类型(declared type) 和 使用它时候的类型(effective type)
  + `decltype`可以用来区分出 上述两种类型
@@ -238,6 +238,7 @@ const int f();
 decltype(f()) x = 0;  // x is const int
 decltype((f()) y = 0; // y is const int; 因为 f() 返回的是右值
 ```
+  
 - Things to Remember
  + decltype almost always yields the type of a variable or expression without any modifications.
  + For lvalue expressions of type T other than names, decltype always reports a type of T&.
