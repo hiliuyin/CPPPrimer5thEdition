@@ -103,10 +103,10 @@ f1(someFunc); // T and ParamType is void(*)(int, double)
 f2(someFunc); // T is void (int, double), and ParamType is void (&)(int, double);
 ```
 - Things to Remember
- + During template type deduction, arguments that are references are treated as non-references, i.e., their reference-ness is ignored.
- + When deducing types for universal reference parameters, lvalue arguments get special treatment.
- + When deducing types for by-value parameters, const and/or volatile arguments are treated as non-const and non-volatile.
- + During template type deduction, arguments that are array or function names decay to pointers, unless they're used to initialize references.
+  + During template type deduction, arguments that are references are treated as non-references, i.e., their reference-ness is ignored.
+  + When deducing types for universal reference parameters, lvalue arguments get special treatment.
+  + When deducing types for by-value parameters, const and/or volatile arguments are treated as non-const and non-volatile.
+  + During template type deduction, arguments that are array or function names decay to pointers, unless they're used to initialize references.
 
 #### 条款2: 理解auto类型推断
 - 通常情况下，template类型推断的规则可以应用于auto类型推断：可以把auto看作T，auto对象的类型指示符(type specifier)看作ParamType
