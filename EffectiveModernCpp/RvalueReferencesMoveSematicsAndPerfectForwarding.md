@@ -78,7 +78,7 @@ Widget w3(std::forward<Widget&>(w2)); // l-value overload
   + A glvalue (“generalized” lvalue) is an lvalue or an xvalue.
   + An rvalue (so-called, historically, because rvalues could appear on the right-hand side of an assignment expression) is an xvalue, a temporary object or subobject thereof, or a value that is not associated with an object.
   + A prvalue (“pure” rvalue) is an rvalue that is not an xvalue. [Example: The result of calling a function whose return type is not a reference is a prvalue]
- 
+```
         expressions
           /     \
          /       \
@@ -87,8 +87,8 @@ Widget w3(std::forward<Widget&>(w2)); // l-value overload
       /  \       /  \
      /    \     /    \
     /      \   /      \
-lvalues   xvalues   prvalues
-
+lvalues   xvalues   prvalue
+```
 - Important rvalue reference properties:
   + For overload resolution, lvalues prefer binding to lvalue references and rvalues prefer binding to rvalue references. Hence why temporaries prefer invoking a move constructor / move assignment operator over a copy constructor / assignment operator.
   + rvalue references will implicitly bind to rvalues and to temporaries that are the result of an implicit conversion. i.e. float f = 0f; int&& i = f; is well formed because float is implicitly convertible to int; the reference would be to a temporary that is the result of the conversion.
