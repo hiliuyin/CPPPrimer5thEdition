@@ -183,10 +183,10 @@ void test( const int &value )
     };
 }
 ```
- + 在lambda表达式中的value，虽然是by-value捕捉，但是因为外部它被声明为const int&，所以在lambda表达式内部它的类型是const int
- + lambda表达式被声明为mutable，并不能改变value的top-level const属性
- + 在C++14中，使用init-capture可以解决这个问题，即`[value = value]`, init-capture中使用的是`auto`推断规则，因此value的top-level const属性被抛弃
- + by-value捕捉，如果lambda表达式没有被声明为mutable，那么即使被by-value捕捉的外部变量不是top-level const的，在lambda表达式内部，它还是top-level const的
+  + 在lambda表达式中的value，虽然是by-value捕捉，但是因为外部它被声明为const int&，所以在lambda表达式内部它的类型是const int
+  + lambda表达式被声明为mutable，并不能改变value的top-level const属性
+  + 在C++14中，使用init-capture可以解决这个问题，即`[value = value]`, init-capture中使用的是`auto`推断规则，因此value的top-level const属性被抛弃
+  + by-value捕捉，如果lambda表达式没有被声明为mutable，那么即使被by-value捕捉的外部变量不是top-level const的，在lambda表达式内部，它还是top-level const的
 ```
 int x = 100;
 auto f1 = [=]() { x = 1000 }; // error
@@ -199,8 +199,7 @@ auto f2 = [=]() mutable { x = 1000; }; // ok
 ```
 auto lamb = [](){return 0;};
 ```
-- lambda作为栈上对象，和其它对象一样，也有constructor/destructor；
-对于capture list不为空的lambda，其捕获的变量会作为这个栈上对象的成员存在着。
+- lambda作为栈上对象，和其它对象一样，也有constructor/destructor；对于capture list不为空的lambda，其捕获的变量会作为这个栈上对象的成员存在着。
 
 - lambda只是匿名函子（anonymous functor）的语法糖
 ```
