@@ -1,4 +1,5 @@
 ##### 条款1: 深刻理解模板类型推断(template type deduction)
+
 ```
 template <typename T> void f(ParamType param);
 f(expr); // 推断T和ParamType的类型
@@ -28,15 +29,17 @@ f3(px);  // T is const int, ParamType is const int*
 ```
   
 - ParamType类型是Universal Reference
- Universal Reference 在标准中已经重新命名为 Forwarding Reference
+ + Universal Reference 在标准中已经重新命名为 Forwarding Reference
  + 在函数模板类型参数列表中，T&&表示Universal Reference
  + When the function parameter type is of the form T&& where T is a template parameter, and the function argument is an lvalue of type A, the type A& is used for template argument deduction. 
  + 引用折叠的规则: "[given] a type TR that is a reference to a type T, an attempt to create the type “lvalue reference to cv TR” creates the type “lvalue reference to T”, while an attempt to create the type “rvalue reference to cv TR” creates the type TR." 
+```
  TR   R
  T&   &   ->  T&  
  T&&  &   ->  T&  
  T&   &&  ->  T&  
  T&&  &&  ->  T&&
+```
 ```
  template <typename T> void f(T&& param);
  
@@ -111,8 +114,10 @@ void f(ParamType param);
 f(expr);
 
 auto x = 27; // template <typename T> void f(T param); -> x is int
-const auto cx = x;  // template <typename T> void f(const T param); -> x is const int
-const auto& rx = x; // template <typename T> void f(const T& param); -> x is const int&
+const auto cx = x; 
+ // template <typename T> void f(const T param); -> x is const int
+const auto& rx = x;
+ // template <typename T> void f(const T& param); -> x is const int&
 ```
 - 对于auto类型推断，type specifier(即ParamType)存在和template函数一致的三种形式，对应的推断规则也是一致的
  1. 指针或者引用，但是不是Universal Reference
