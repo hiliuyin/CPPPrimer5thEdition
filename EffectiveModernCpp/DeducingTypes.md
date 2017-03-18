@@ -4,8 +4,10 @@
 template <typename T> void f(ParamType param);
 f(expr); // 推断T和ParamType的类型
 ```
+
 - ParamType类型为引用或者指针，但不是Universal Reference
- + 如果expr的类型是引用，那么忽略掉引用，而使用被引用对象的类型
+  - 如果expr的类型是引用，那么忽略掉引用，而使用被引用对象的类型
+
 ```
 template <typename T> void f1(T& param);
 template <typename T> void f2(const T& param);
@@ -29,10 +31,10 @@ f3(px);  // T is const int, ParamType is const int*
 ```
   
 - ParamType类型是Universal Reference
- + Universal Reference 在标准中已经重新命名为 Forwarding Reference
- + 在函数模板类型参数列表中，T&&表示Universal Reference
- + When the function parameter type is of the form T&& where T is a template parameter, and the function argument is an lvalue of type A, the type A& is used for template argument deduction. 
- + 引用折叠的规则: "[given] a type TR that is a reference to a type T, an attempt to create the type “lvalue reference to cv TR” creates the type “lvalue reference to T”, while an attempt to create the type “rvalue reference to cv TR” creates the type TR." 
+  + Universal Reference 在标准中已经重新命名为 Forwarding Reference
+  + 在函数模板类型参数列表中，T&&表示Universal Reference
+  + When the function parameter type is of the form T&& where T is a template parameter, and the function argument is an lvalue of type A, the type A& is used for template argument deduction. 
+  + 引用折叠的规则: "[given] a type TR that is a reference to a type T, an attempt to create the type “lvalue reference to cv TR” creates the type “lvalue reference to T”, while an attempt to create the type “rvalue reference to cv TR” creates the type TR." 
 ```
  TR   R
  T&   &   ->  T&  
@@ -54,8 +56,8 @@ f3(px);  // T is const int, ParamType is const int*
 ```
 
 - ParamType 既不是指针也不是引用
- + 如果expr的类型是引用，那么忽略掉引用，而使用被引用对象的类型
- + 忽略top-level cv-qualifier. A top level const qualifier affects the object itself. Others are only relevant with pointers and references. They do not make the object const, and only prevent modification through a path using the pointer or reference.
+  + 如果expr的类型是引用，那么忽略掉引用，而使用被引用对象的类型
+  + 忽略top-level cv-qualifier. A top level const qualifier affects the object itself. Others are only relevant with pointers and references. They do not make the object const, and only prevent modification through a path using the pointer or reference.
 ```
 template <typename T> void f(T param);
 
@@ -76,8 +78,8 @@ f(ptr); // ignore top-level const, T is const char*, ParamType is const char*
 ```
 
 - 如果模板类型实参是数组类型
- + 如果模板类型参数在函数参数列表中是按值传递，那么数组退化为指针
- + 如果模板类型参数在函数参数列表中是按引用传递，那么保持数组类型
+  + 如果模板类型参数在函数参数列表中是按值传递，那么数组退化为指针
+  + 如果模板类型参数在函数参数列表中是按引用传递，那么保持数组类型
 ```
 const char name[] = "hello world";
 
@@ -89,8 +91,8 @@ f(name); // T is const char[12], ParamType is const char (&)[12];
 ```
 
 - 如果模板类型实参是函数
- + 如果模板类型参数在函数参数列表中是按值传递，那么函数退化为函数指针
- + 如果模板类型参数在函数参数列表中是按引用传递，那么保持函数类型
+  + 如果模板类型参数在函数参数列表中是按值传递，那么函数退化为函数指针
+  + 如果模板类型参数在函数参数列表中是按引用传递，那么保持函数类型
 ```
 void someFunc(int, double);
 
@@ -106,7 +108,7 @@ f2(someFunc); // T is void (int, double), and ParamType is void (&)(int, double)
  + When deducing types for by-value parameters, const and/or volatile arguments are treated as non-const and non-volatile.
  + During template type deduction, arguments that are array or function names decay to pointers, unless they're used to initialize references.
 
-####条款2: 理解auto类型推断
+#### 条款2: 理解auto类型推断
 - 通常情况下，template类型推断的规则可以应用于auto类型推断：可以把auto看作T，auto对象的类型指示符(type specifier)看作ParamType
 ```
 template <typename T>
@@ -120,9 +122,9 @@ const auto& rx = x;
  // template <typename T> void f(const T& param); -> x is const int&
 ```
 - 对于auto类型推断，type specifier(即ParamType)存在和template函数一致的三种形式，对应的推断规则也是一致的
- 1. 指针或者引用，但是不是Universal Reference
- 2. Universal Reference
- 3. 既不是指针，也不是引用
+  1. 指针或者引用，但是不是Universal Reference
+  2. Universal Reference
+  3. 既不是指针，也不是引用
 ```
 auto x = 27;
 const auto cx = x;
@@ -194,10 +196,10 @@ int main(int argc, char** argv) {
 } 
 ```
 - Things to Remember
- + auto type deduction is usually the same as template type deduction, but auto type deduction assumes that a braced initializer represents a std::initializer_list, and template type deduction doesn't.
- + auto in a function return type or a lambda parameter implies template type deduction, not auto type deduction.
+  + auto type deduction is usually the same as template type deduction, but auto type deduction assumes that a braced initializer represents a std::initializer_list, and template type deduction doesn't.
+  + auto in a function return type or a lambda parameter implies template type deduction, not auto type deduction.
 
-####条款3: 理解decltype
+#### 条款3: 理解decltype
 - 相较于auto类型推断和template类型推断，decltype的类型推断规则要简化清晰很多；通常情况下，decltype类型推断不会改变用于推断的类型
 ```
 const int i = 0; // decltype(i) is const int
@@ -227,10 +229,10 @@ decltype(i) d2; // d2是int
 ```
   
 - 一些有关`decltype`的细节
- + 一个对象的类型包括：声明时的类型(declared type) 和 使用它时候的类型(effective type)
- + `decltype`可以用来区分出 上述两种类型
- + `decltype`用在变量名时，关注的是declared type
- + `decltype`用在表达式时，关注的是effective type; 如果effective type是左值，那么返回的是左值引用
+  + 一个对象的类型包括：声明时的类型(declared type) 和 使用它时候的类型(effective type)
+  + `decltype`可以用来区分出 上述两种类型
+  + `decltype`用在变量名时，关注的是declared type
+  + `decltype`用在表达式时，关注的是effective type; 如果effective type是左值，那么返回的是左值引用
 ```
 struct S { int i = 0; };
 const S s;
@@ -245,6 +247,6 @@ decltype((f()) y = 0; // y is const int; 因为 f() 返回的是右值
 ```
   
 - Things to Remember
- + decltype almost always yields the type of a variable or expression without any modifications.
- + For lvalue expressions of type T other than names, decltype always reports a type of T&.
+  + decltype almost always yields the type of a variable or expression without any modifications.
+  + For lvalue expressions of type T other than names, decltype always reports a type of T&.
  
