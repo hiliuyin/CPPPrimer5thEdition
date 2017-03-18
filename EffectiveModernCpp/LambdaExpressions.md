@@ -1,4 +1,4 @@
-#####条款31: 避免使用默认的捕捉方式
+##条款31: 避免使用默认的捕捉方式
 - C++11中，lambda表达式支持两种捕捉方式：by-value 和 by-reference
 ```
 auto byValue = [=]() {};
@@ -74,7 +74,7 @@ void addDivisorFilter()
     ++divisor; // modify divisor
 }
 ```
-#####条款32: 使用初始化捕捉（init capture）使得lambdas支持移动操作
+##条款32: 使用初始化捕捉（init capture）使得lambdas支持移动操作
 - C++11中，lambdas仅仅支持 by-value 和 by-reference 两种捕捉方式
 - C++14中，lambdas引入了新特性init capture，通过init capure，可以使得lambdas支持移动捕捉
 ```
@@ -109,7 +109,7 @@ auto func3 = std::bind([](const std::unique_ptr<T>& ptr) { // do something on pt
     std::make_unique<T>());
 ```
 
-#####条款34: 相较于`std::bind`, lambdas通常是更优的选择
+##条款34: 相较于`std::bind`, lambdas通常是更优的选择
 - C++11中，移动捕捉方式只能通过`std::bind`模拟
 - C++11中，lambdas是单态的，而`std::bind`是多态的
 ```
@@ -193,7 +193,7 @@ auto f1 = [=]() { x = 1000 }; // error
 auto f2 = [=]() mutable { x = 1000; }; // ok
 ```
 
-##### Miscs
+##Miscs
 - lambda本质上就是一个创建在栈上的没有类型的C++对象，和其它的C++对象一样
 - lambda会创建一个栈上的临时对象，因此可以用它去初始化变量
 ```
