@@ -4,7 +4,8 @@
 - 有关`std::move`
   + `std::move`支持隐式实例化
   + `std::move`的实现，在C++14中，`std::move`是constexpr
-  + `std::move`执行无条件的右值转换
+  + `std::move`的结果是xvalue expression
+ + `std::move`执行无条件的右值转换
 ```
 // TEMPLATE FUNCTION move
 template<class _Ty> inline
