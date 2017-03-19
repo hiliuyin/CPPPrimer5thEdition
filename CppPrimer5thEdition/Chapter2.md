@@ -97,11 +97,11 @@ int main()
 
 C++标准中还定义了如下类型：
 
-    size_t: implementation-defined unsigned integer type
-    ssize_t: implementation-defined signed integer type
-    ptrdiff_t:  implementation-defined signed integer type of the result of subtracting two pointers.
-    std::size_type:
-    std::difference_type:
+- size_t: implementation-defined unsigned integer type
+- ssize_t: implementation-defined signed integer type
+- ptrdiff_t:  implementation-defined signed integer type of the result of subtracting two pointers.
+- std::size_type:
+- std::difference_type:
 
 #### 字面值常量(Literal Constant)
 - 字面值常量: 称之为字面值是因为只能用它的值称呼它，称之为常量是因为它的值不能修改。
@@ -310,56 +310,56 @@ char x = 'x';  char *const p = &x;
 In this case, p will point to x forever; any attempt to change this is undefined behavior (and the compiler may put p in read-only memory, or assume that \*p refers to x, regardless of any other code).
 
 * 非引用类型的const对象初始化:const对象可以由非const对象初始化，反之亦可。
-
-        int x = 100;
-        const int y = x; // Okay
-        const int x = 100;
-        int y = x; // Okay
-
+```
+int x = 100;
+const int y = x; // Okay
+const int x = 100;
+int y = x; // Okay
+```
 * 普通的指针不能被const对象的地址初始化和赋值。
-
-        int x = 100;
-        const int *p = &x; // Okay
-        const int x = 100;
-        int *p = &x; // error, invalid conversion from 'const int*' to 'int*'
-
+```
+int x = 100;
+const int *p = &x; // Okay
+const int x = 100;
+int *p = &x; // error, invalid conversion from 'const int*' to 'int*'
+```
 * const引用类型对象初始化：  
 const引用可以被非const对象初始化；const引用可以被绑定到相关类型（存在隐式转换）或者右值上，会引入临时对象。
-
-        double dval = 3.14;
-        const int &ri = dval;
-        const int temp = dval; // create a temporary const int from the double
-        const int &ri = temp; // bind ri to that temporary object
-
+```
+double dval = 3.14;
+const int &ri = dval;
+const int temp = dval; // create a temporary const int from the double
+const int &ri = temp; // bind ri to that temporary object
+```
 ##### constexpr和常量表达式
 * 字面值属于常量表达式，用常量表达式初始化的const对象也是常量表达式。
-
-        const int max_files = 20;
-        const int limit = max_files+1;
- 
+```
+const int max_files = 20;
+const int limit = max_files+1;
+```
 * constexpr变量  
 C++11规定，允许将变量声明为constexpr类型以便由编译器来验证变量的值是否是一个常量表达式。
 声明为constexpr的变量**一定**是一个常量，而且**必须用常量表达式初始化**。
-
-        constexpr int mf = 20;
-        constexpr int limit = mf+1;
-        constexpr int sz = size(); // 只有当size是一个constexpr函数时才是合法的声明语句
-
+```
+constexpr int mf = 20;
+constexpr int limit = mf+1;
+constexpr int sz = size(); // 只有当size是一个constexpr函数时才是合法的声明语句
+```
 * 字面值类型（literal type）  
 常量表达式的值需要在编译时就得到计算，因此对声明constexpr时用到的类型必须有所限制，这类类型称为**字面值类型**  
 算术类型，引用和指针都属于**字面值类型**  
 指针和引用都能定义成constexpr，但它们的初始值却受到严格限制  
 一个constexpr指针的初始值必须是nullptr或者0，或者是存储于某个固定地址中的对象
 ```
-        constexpr int *p = nullptr; // ok
-        int x = 100; // global variable
-        constexpr int *p = &x; // ok
-        constexpr int &y = x; // ok
+constexpr int *p = nullptr; // ok
+int x = 100; // global variable
+constexpr int *p = &x; // ok
+constexpr int &y = x; // ok
 ```
 在constexpr声明中如果定义了一个指针，限定符constexpr仅对指针本身有效，与指针所指的对象无关
 ```
-        const int *p = nullptr; // p is a pointer to const int
-        constexpr int *q = nullptr; // q is a const pointer to int
+const int *p = nullptr; // p is a pointer to const int
+constexpr int *q = nullptr; // q is a const pointer to int
 ```
 
 ##### Difference between `constexpr` and `const`
@@ -388,15 +388,11 @@ But note that `constexpr` is not the only way to do this.
 
 > - It can be used in places that require compile-time evaluation, for example, template parameters and array-size specifiers:
 
-> ```
-template<int N>  
-class fixed_size_list  
-{ /*...*/ };
-> ```
+> `template<int N> class fixed_size_list { /*...*/ };`
 
-> ```fixed_size_list<X> mylist;  // X must be an integer constant expression```
+> `fixed_size_list<X> mylist;  // X must be an integer constant expression`
 
-> ```int numbers[X];  // X must be an integer constant expression```
+> `int numbers[X];  // X must be an integer constant expression`
 
 > But note:
 
@@ -404,14 +400,9 @@ class fixed_size_list
 
 > - An object may be fit for use in constant expressions without being declared constexpr. Example:
 
-> ```
-int main()  
-{
-  const int N = 3;
-  int numbers[N] = {1, 2, 3};  // N is constant expression
-  return 0;
-}
-> ```
+> `const int N = 3;`
+> `int numbers[N] = {1, 2, 3};  // N is constant expression`
+> `return 0;`
 
 > This is possible because N, being constant and initialized at declaration time with a literal, satisfies the criteria for a constant expression, even if it isn't declared constexpr.
 
@@ -427,31 +418,15 @@ int main()
 
 > - For a function to be fit for use in constant expressions, it must be explicitly declared constexpr; it is not sufficient for it merely to satisfy the criteria for constant-expression functions. Example:
 
-> ```
-> template<int N>
-class list
-{ };
-> ```
+> `template<int N> class list { }; `
 
-> ```
-> constexpr int sqr1(int arg)
-{ return arg * arg; }
-> ```
+> `constexpr int sqr1(int arg) { return arg * arg; }`
 
-> ```
-> int sqr2(int arg)
-{ return arg * arg; }
-> ```
+> `int sqr2(int arg) { return arg * arg; }`
 
-> ```
-> int main()
-{
-  const int X = 2;
-  list<sqr1(X)> mylist1;  // OK: sqr1 is constexpr
-  list<sqr2(X)> mylist2;  // wrong: sqr2 is not constexpr
-  return 0;
-}
-> ```
+> `const int X = 2;`
+> `list<sqr1(X)> mylist1;  // OK: sqr1 is constexpr`
+> `list<sqr2(X)> mylist2;  // wrong: sqr2 is not constexpr`
 
 > * **When can I / should I use both, `const` and `constexpr` together?**
 
@@ -465,14 +440,11 @@ class list
 
 > However, note that there may be situations when the keywords each refer to different parts of the declaration:
 
-> ```
-> static constexpr int N = 3;
-int main()
-{
-  constexpr const int *NP = &N;
-  return 0;
-}
-> ```
+> `static constexpr int N = 3;`
+> `int main() {`
+> `constexpr const int *NP = &N;`
+> `return 0;`
+> `}`
 
 > Here, NP is declared as an address constant-expression, i.e. an pointer that is itself a constant expression. (This is possible when the address is generated by applying the address operator to a static/global constant expression.) Here, both constexpr and const are required: constexpr always refers to the expression being declared (here NP), while const refers to int (it declares a pointer-to-const). Removing the const would render the expression illegal (because (a) a pointer to a non-const object cannot be a constant expression, and (b) &N is in-fact a pointer-to-constant).
 
@@ -488,7 +460,7 @@ int main()
 
 > The conditions for acceptable constexpr functions will probably be relaxed for C++14. A proposal by Richard Smith has recently been adopted into the C++14 draft.  
 
-##### **数组和指针**
+#### **数组和指针**
 - 数组是分配了一块连续的存储区域，数组名可代表整个数组，可以用sizeof取得数组的真实大小；
   指针则只分配了指针大小的内存，并且可以指向某个有效的存储区域。
  
@@ -518,22 +490,22 @@ sizeof(a);   // no degration.
  + 对指针和一维数组解引用，会发生访存操作
  + 对多维数组解引用，只是类型改变。
 ```
-   int x = 100;
-   int *p = &x;
-   *p = 200;  // x -> 200
-   int array[2] = { 10, 20 };
-   *array = 30;  // { 30, 20 }
+int x = 100;
+int *p = &x;
+*p = 200;  // x -> 200
+int array[2] = { 10, 20 };
+*array = 30;  // { 30, 20 }
 ```
 ```
-   int array[3][4];  // *array的类型是 int[4]
+int array[3][4];  // *array的类型是 int[4]
 ```
 - 取址操作符可作用于数组名和指针：
  + 对指针取址，取得的是指针所在的地址，即指向指针的指针；
  + 对数组名取址，只是类型改变，得到的还是该数组首元素的地址。
 ```
-    int array[10];   // sizeof(array) = 10*sizeof(int)
-    printf(“0x%x\n”, &array);  // -> printf(“0x%x\n”, array);
-                               // &array的类型: int (*)[10]
+int array[10];   // sizeof(array) = 10*sizeof(int)
+printf(“0x%x\n”, &array);  // -> printf(“0x%x\n”, array);
+                           // &array的类型: int (*)[10]
 ```
 
 - 下标运算符[] 可作用于数组名和指针。
@@ -670,7 +642,7 @@ extern "C" typedef void FC(int);
 void f2(FC *pfParm); // f2：C++链接属性；pfParm：C链接属性
 ```
 
-##### **`auto`类型说明符**
+#### **`auto`类型说明符**
 
 - C++11引入了`auto`类型说明符
 
@@ -683,15 +655,13 @@ auto item = val1 + val2;`
 auto i = 0, *p = &i;
 ```
 - 复合类型和auto
-编译器推断出来的auto类型有时候和初始值的类型并不完全一样
-
-当引用被作为初始值的时候，编译器以引用对象的类型作为auto的类型：
+  + 编译器推断出来的auto类型有时候和初始值的类型并不完全一样
+  + 当引用被作为初始值的时候，编译器以引用对象的类型作为auto的类型：
 ```
 int i = 0, &r = i;
 auto a = r; // a is int
 ```
-
-auto一般会忽略掉top-level const，同时low-level const则会保留下来
+  + auto一般会忽略掉top-level const，同时low-level const则会保留下来
 ```
 int i = 0;
 const int ci = i, &cr = ci;
@@ -700,27 +670,22 @@ auto c = cr; // c is int
 auto d = &i; // d is a pointer to int
 auto e = &ci; // e is a pointer to const int
 ```
-
-如果希望推断出的auto类型是一个顶层const，需要明确指出：
+  + 如果希望推断出的auto类型是一个顶层const，需要明确指出：
 ```
 const auto f = ci; // f is const int
 ```
-
-可以将引用类型设为auto，顶层const不会被忽略，除此之外原来的初始化规则仍然适用，
+  + 可以将引用类型设为auto，顶层const不会被忽略，除此之外原来的初始化规则仍然适用，
 ```
 auto &g ＝ ci; // ok, g is a reference to const int
 auto &h = 42; // error, int& 不能绑定到整型常量
 const auto &j = 42; // ok, const int& 可以绑定到整型常量
 ```
-
-##### `decltype`类型指示符
-
+#### `decltype`类型指示符
 - C++11 引入了`decltype`，它的作用是选择并返回操作数的数据类型，
 在此过程中，编译器分析表达式并得到它的类型，但并不实际计算表达式的值
 ```
 decltype(f()) sum = x;
 ```
-
 - decltype处理顶层const和引用的方式与auto不同，如果decltype使用的表达式是一个变量，
 则decltype返回该变量的类型（包括顶层const 和 reference 在内）
 ```
@@ -729,23 +694,18 @@ decltype(ci) x = 0; // x is const int
 decltype(cj) y = x; // y is const int&
 decltype(cj) z;  // error, z is a reference, must be initialized
 ```
-
 - 引用从来都是作为其所指对象的同义词出现，只有在decltype处是一个例外
-
 - 如果decltype使用的表达式不是一个变量，则decltype返回表达式结果对应的类型
   **有的表达式返回一个引用类型，因为该表达式的结果对象是左值**
-
 ```
 int i = 42, *p = &i, &r = i;
 decltype(r+0) b; // ok, b is int
 decltype(*p) c; // error, 因为*p为左值, c is int& (l-value)
 ```
-
 - delctype((variable))的结果永远是引用
-
 - decltype(variable)的结果只有当variable本身就是一个引用时才是引用
 
-##### 自定义数据类型
+#### 自定义数据类型
 
 - C++11规定，可以为数据成员提供一个类内初始值（in-class initializer）
 创建对象时，类内初始值将用于初始化数据成员，没有初始值的成员将被默认初始化
@@ -760,31 +720,27 @@ struct Sales_data
 };
 ```
 
-##### **标量类型（Scalar types）**
+#### **标量类型（Scalar types）**
 
 - **Arithmetic types** (3.9.1)，
-**enumeration types**,
-**pointer types**,
-**pointer to member types** (3.9.2),
-**std::nullptr_t**,
-and 
-**cv-qualified versions of these types** (3.9.3)
-are collectively called 
-**scalar types**.
+  + **enumeration types**,
+  + **pointer types**,
+  + **pointer to member types** (3.9.2),
+  + **std::nullptr_t**,
+  + **cv-qualified versions of these types** (3.9.3) are collectively called 
+  + **scalar types**.
 
 - 标量类型是POD（Plain Old Data）类型
 
 ##### C风格字符串 (C-Style Character Strings)
 
-以空字符null (‘\0’ 和 L’\0’)结尾的字符数组。
+- 以空字符null (‘\0’ 和 L’\0’)结尾的字符数组。
 ```
 char s[] = {‘a’, ‘b’, ‘c’}; // 不是C风格字符串
 char s[] = “abc”; // C风格字符串
 ```
-
-字符串字面值的类型是const char类型的字符数组
-
-通过(const) char*类型的指针来操纵C风格字符串
+- 字符串字面值的类型是const char类型的字符数组
+- 通过(const) char*类型的指针来操纵C风格字符串
 ```
 char *p = “hello”; // 指向只读数据块的指针，字符串可能被编译器放入字符串池。
 p[1] = 'x'; // 可通过编译，但是会引起segmentation fault
@@ -792,14 +748,10 @@ char s[] = “hello”; // 可写数据块（全局或静态）或者堆栈（�
 const char *p = “hello”;
 const char s[] = “hello”;  // 注意这两种声明的区别
 ```
-
-size_t是标准库中与机器相关的typedef类型定义，其类型定义在stddef.h中(cstddef)，标准规定其为unsigned integer类型
-
-永远不要忘记字符串结束符 null
-
-使用 `strn..` 函数处理C风格字符串
-
-string类提供了c_str()函数用于返回C风格字符串，返回值类型是const char*
+- size_t是标准库中与机器相关的typedef类型定义，其类型定义在stddef.h中(cstddef)，标准规定其为unsigned integer类型
+- 永远不要忘记字符串结束符 null
+- 使用 `strn..` 函数处理C风格字符串
+- string类提供了c_str()函数用于返回C风格字符串，返回值类型是const char*
 ```
 string s("hello world");
 const char *str = s.c_str();
@@ -822,10 +774,8 @@ const char *str = s.c_str();
 > 为了将 POD 类型概念化，你可以通过拷贝其比特来拷贝它们。
 
 > 此外， POD 类型可以是非初始化的。例如：
-> ```
-     struct RECT r; // value undefined
-     POINT *ppoints = new POINT[100]; // ditto
-     String s; // calls ctor ==> not POD
-> ```
+> `struct RECT r; // value undefined`
+> `POINT *ppoints = new POINT[100]; // ditto`
+> `String s; // calls ctor ==> not POD`
 
 > 非 POD 类型通常需要初始化，不论是调用缺省的构造函数（编译器提供的）还是自己写的构造函数。
