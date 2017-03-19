@@ -93,8 +93,8 @@ lvalues   xvalues   prvalue
 ```
 - Important rvalue reference properties:
   + For overload resolution, lvalues prefer binding to lvalue references and rvalues prefer binding to rvalue references. Hence why temporaries prefer invoking a move constructor / move assignment operator over a copy constructor / assignment operator.
-  + rvalue references will implicitly bind to rvalues and to temporaries that are the result of an implicit conversion. i.e. float f = 0f; int&& i = f; is well formed because float is implicitly convertible to int; the reference would be to a temporary that is the result of the conversion.
-  + Named rvalue references are lvalues. Unnamed rvalue references are rvalues. This is important to understand why the std::move call is necessary in: foo&& r = foo(); foo f = std::move(r);
+  + rvalue references will implicitly bind to rvalues and to temporaries that are the result of an implicit conversion. i.e. `float f = 0f; int&& i = f;` is well formed because float is implicitly convertible to int; the reference would be to a temporary that is the result of the conversion.
+  + Named rvalue references are lvalues. Unnamed rvalue references are rvalues. This is important to understand why the std::move call is necessary in: `foo&& r = foo(); foo f = std::move(r);`
 
 - 一些极好的链接  
 http://stackoverflow.com/questions/3582001/advantages-of-using-forward
