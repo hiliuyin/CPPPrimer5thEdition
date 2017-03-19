@@ -1,7 +1,8 @@
 - reverse_iterator和iterator的关系
- ＋ 通过reverse_iterator::base()可以得到iterator
- `std::reverse_iterator(it).base() == it`
- 
+  + 通过reverse_iterator::base()可以得到iterator
+ ```
+ std::reverse_iterator(it).base() == it
+ ```
  + reverse_iterator::base和iterator之间存在着偏移
  ```
  &*(reverse_iterator(i)) == &*(i - 1)
