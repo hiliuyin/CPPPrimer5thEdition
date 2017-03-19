@@ -10,32 +10,32 @@ bool类型: C99中也引入了bool类型，定义在stdbool.h头文件中；在C
 字符类型: char，wchar_t，char16_t，char32_t  
 int类型: short，int，long，long long
 
-- 浮点数
+- 浮点数  
 float，double，long double
 
-- 整型类型可以按照有无符号区分（unsigned, signed）
+- 整型类型可以按照有无符号区分（unsigned, signed）  
 char类型包括三种类型：unsigned char，signed char 和 char  
 标准仅仅规定了它们的宽度是一致的，但是char究竟是unsigned还是signed则是implementation-defined，我们不能做任何假设。
 
 - 切勿混用有符号类型和无符号类型
 
 #### 基本内置类型的宽度
-基本内置类型的宽度是implementation-defined的，C++标准只规定了一个范围，  
+- 基本内置类型的宽度是implementation-defined的，C++标准只规定了一个范围，  
 所以除了标准中保证的宽度，我们不能对内建型别的数据宽度做任何假设，否则会引入问题，同时代码也不具备可移植性。
 
-C++标准保证：
-对char类型或值为char类型的表达式做sizeof()操作保证得1;  
-wchar_t为两个字节宽;
-short <= int <= long, int的宽度为机器字长，在32位机上，典型情况下，short为2字节，int为4字节，long为4字节;
-float < double，在32位机器上，典型情况，float为4字节，double为8字节;
+- C++标准保证：
+  + 对char类型或值为char类型的表达式做sizeof()操作保证得1;  
+  + wchar_t为两个字节宽;
+  + short <= int <= long, int的宽度为机器字长，在32位机上，典型情况下，short为2字节，int为4字节，long为4字节;
+  + float < double，在32位机器上，典型情况，float为4字节，double为8字节;
 
-在C++标准中，bool类型的宽度只需要能容纳下0和1即可，很多编译器的实现选择了1个字节，但是标准不保证sizeof(bool) == 1
+- 在C++标准中，bool类型的宽度只需要能容纳下0和1即可，很多编译器的实现选择了1个字节，但是标准不保证sizeof(bool) == 1
 
-在limits.h和climits头文件中，编译器按照标准定义了整数类型的大小（宏定义）
+- 在limits.h和climits头文件中，编译器按照标准定义了整数类型的大小（宏定义）
 
-下面是一道很经典的题目，有关整数类型的宽度:  
-Write a program to determine the ranges of char, short, int, and long variables,  
-both signed and unsigned, by printing appropriate values from standard headers and by direct computation.
+- 下面是一道很经典的题目，有关整数类型的宽度:  
+> Write a program to determine the ranges of char, short, int, and long variables,  
+> both signed and unsigned, by printing appropriate values from standard headers and by direct computation.
 ```
 const int BITS_PER_BYTE = 8;
 
@@ -104,31 +104,29 @@ C++标准中还定义了如下类型：
     std::difference_type:
 
 #### 字面值常量(Literal Constant)
-字面值常量: 称之为字面值是因为只能用它的值称呼它，称之为常量是因为它的值不能修改。
+- 字面值常量: 称之为字面值是因为只能用它的值称呼它，称之为常量是因为它的值不能修改。
 
-每个字面值都有相应的类型，只有内置类型存在字面值，可以通过增加前缀和后缀改变字面值常量的默认类型。
+- 每个字面值都有相应的类型，只有内置类型存在字面值，可以通过增加前缀和后缀改变字面值常量的默认类型。
+  * 整型常量：默认为int或long，实际类型取决于其字面值，可有U后缀和L后缀；
+  * 浮点数常量：默认为double，可有F后缀和L后缀；
+  * 字符常量：可通过L前缀表示宽字符常量，如 L'a';
+  * 字符串常量：亦可通过L前缀表示宽字符串常量, 如 L"hello";
+  * bool常量：true和false
+  * 指针字面值：nullptr
 
-* 整型常量：默认为int或long，实际类型取决于其字面值，可有U后缀和L后缀；
-* 浮点数常量：默认为double，可有F后缀和L后缀；
-* 字符常量：可通过L前缀表示宽字符常量，如 L'a';
-* 字符串常量：亦可通过L前缀表示宽字符串常量, 如 L"hello";
-* bool常量：true和false
-* 指针字面值：nullptr
+- 字面值常量具有存储区域，但是是不可寻址的，可以作为右值。
 
-字面值常量具有存储区域，但是是不可寻址的，可以作为右值。
-
-某些字面值常量的类型在C和C++中是不同的，例如:  
+- 某些字面值常量的类型在C和C++中是不同的，例如:   
 在C中，字符常量的类型是int：sizeof('a') == 4  
 在C++中，字符常量的类型是char：sizeof('a') == 1
 
 #### **变量（Variable）**
-变量具有右值属性（r-value）和左值属性（l-value），是可寻址的。
+- 变量具有右值属性（r-value）和左值属性（l-value），是可寻址的。
 
-在此处需要强调一下对象和变量这两个概念：  
-所谓对象，在C++中指的是执行环境中的一块存储区域，该存储区域中的内容则代表了该对象的值；  
-所谓变量，指的是一种声明，通过声明，我们将一个名字和一个对象对应起来，通过名字可以操作对象，简而言之，即命名的存储区域。
-
-注意区分：临时对象 和 临时变量。
+- 在此处需要强调一下对象和变量这两个概念：  
+  + 所谓对象，在C++中指的是执行环境中的一块存储区域，该存储区域中的内容则代表了该对象的值；  
+  + 所谓变量，指的是一种声明，通过声明，我们将一个名字和一个对象对应起来，通过名字可以操作对象，简而言之，即命名的存储区域。
+  + 注意区分：临时对象 和 临时变量。
 
 内建型别变量的初始化:  
 
@@ -363,6 +361,7 @@ C++11规定，允许将变量声明为constexpr类型以便由编译器来验证
         const int *p = nullptr; // p is a pointer to const int
         constexpr int *q = nullptr; // q is a const pointer to int
 ```
+
 ##### Difference between `constexpr` and `const`
 > * **Basic meaning and syntax**
 
@@ -390,7 +389,7 @@ But note that `constexpr` is not the only way to do this.
 > - It can be used in places that require compile-time evaluation, for example, template parameters and array-size specifiers:
 
 > ```
-> template<int N>  
+template<int N>  
 class fixed_size_list  
 { /*...*/ };
 > ```
@@ -487,7 +486,7 @@ int main()
 
 > under C++14 in order to still be usable as a const function. Best mark your constexpr member functions as const even now so as to avoid having to change a lot of code later on.
 
-> (†) The conditions for acceptable constexpr functions will probably be relaxed for C++14. A proposal by Richard Smith has recently been adopted into the C++14 draft.
+> The conditions for acceptable constexpr functions will probably be relaxed for C++14. A proposal by Richard Smith has recently been adopted into the C++14 draft.  
 
 ##### **数组和指针**
 - 数组是分配了一块连续的存储区域，数组名可代表整个数组，可以用sizeof取得数组的真实大小；
@@ -497,10 +496,10 @@ int main()
   指针可作为左值。
 
 - 数组名在多数情况下会退化为指向数组第一个元素的指针（右值）。
-数组不发生退化的地方有几个场合，
- + 声明时
- + 用作sizeof的操作数时
- + 用作&取址运算的操作数时 
+- 数组不发生退化的地方有几个场合，
+  + 声明时
+  + 用作sizeof的操作数时
+  + 用作&取址运算的操作数时 
 ```
 int a[3] = {1,2,3};
 int b[3];
