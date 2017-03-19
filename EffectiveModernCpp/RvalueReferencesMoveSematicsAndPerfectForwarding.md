@@ -4,7 +4,7 @@
 - 有关`std::move`
   + `std::move`支持隐式实例化
   + `std::move`的实现，在C++14中，`std::move`是constexpr
-  + `std::move`的结果是xvalue expression
+  + `std::move`的结果是`xvalue expression`
   + `std::move`执行无条件的右值转换
 ```
 // TEMPLATE FUNCTION move
@@ -43,6 +43,7 @@ typename remove_reference<_Ty>::type&& _Arg) _NOEXCEPT  // 参数是右值类型
   + 按照`perfect forwarding`的规则来决定返回值类型
   + 如果T绑定到左值引用类型，那么返回值类型是左值引用
   + 如果T绑定到非引用类型或者右值引用类型，那么返回值类型是右值引用
+
 ```
 class A
 {
