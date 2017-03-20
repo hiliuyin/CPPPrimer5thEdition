@@ -172,7 +172,7 @@ private:
 };
 ```
 
-#### 条款20: 如何使用`std::weak_ptr`
+### 条款20: 如何使用`std::weak_ptr`
 - `std::weak_ptr`是`std::shared_ptr`的伴随类，它是一种弱引用，指向`std::shared_ptr`所管理的对象
 - `std::weak_ptr`共享使用`std::shared_ptr`的control block，control block包括有`std::weak_ptr`的弱引用计数
 - 使用`std::weak_ptr`可避免引用循环
@@ -262,7 +262,8 @@ Widget& Widget::operator=(const Widget& rhs)
 }
 ```
 
-- miscs  
+### miscs
+- Useful links
 http://stackoverflow.com/questions/6012157/is-stdunique-ptrt-required-to-know-the-full-definition-of-t/
 
 
