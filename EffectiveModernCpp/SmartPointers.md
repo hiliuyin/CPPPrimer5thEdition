@@ -263,7 +263,7 @@ Widget& Widget::operator=(const Widget& rhs)
 ```
 
 ### miscs
-- Useful links
+- Useful links  
 http://stackoverflow.com/questions/6012157/is-stdunique-ptrt-required-to-know-the-full-definition-of-t/
 
 
