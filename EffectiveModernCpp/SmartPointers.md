@@ -1,4 +1,4 @@
-#### 条款18: 使用`std::unique_ptr`管理需独占资源所有权的对象
+### 条款18: 使用`std::unique_ptr`管理需独占资源所有权的对象
 - C++11引入了`std::unique_ptr`，替代了之前的`std::auto_ptr`
 - `std::unique_ptr` 是类模板
 - `std::unique_ptr` 只支持移动语义，禁用拷贝语义操作
@@ -79,9 +79,7 @@ private:
 ...
 };
 ```
-
-
-#### 条款19: 使用`std::shared_ptr`管理共享资源的对象
+### 条款19: 使用`std::shared_ptr`管理共享资源的对象
 - 相较于`std::unique_ptr`，`std::shared_ptr`是重量级的
 - `std::shared_ptr`的引用计数的增减是原子操作
 - `std::shared_ptr`的大小是raw pointer的两倍，是因为它包含两个指针，一个指向创建的对象，一个指向control block
@@ -174,7 +172,7 @@ private:
 };
 ```
 
-#####条款20: 如何使用`std::weak_ptr`
+#### 条款20: 如何使用`std::weak_ptr`
 - `std::weak_ptr`是`std::shared_ptr`的伴随类，它是一种弱引用，指向`std::shared_ptr`所管理的对象
 - `std::weak_ptr`共享使用`std::shared_ptr`的control block，control block包括有`std::weak_ptr`的弱引用计数
 - 使用`std::weak_ptr`可避免引用循环
@@ -193,7 +191,7 @@ if (wpw.expired())
 std::shared_ptr<Widget> spw1 = wpw.lock();
 ```
 
-####条款21: 优先使用`std::make_shared`和`std::make_unique`而不是new操作符
+### 条款21: 优先使用`std::make_shared`和`std::make_unique`而不是new操作符
 - 使用`std::make_shared`和`std::make_unique`函数可以使代码变的优雅
 ```
 std::shared_ptr<Widget> pw(new Widget());
@@ -213,7 +211,8 @@ processWidget(std::make_shared<Widget>(), computePriority()); // 异常安全
 - `std::make_shared`和`std::make_unique`  
 May throw std::bad_alloc or any exception thrown by the constructor of T. If an exception is thrown, this function has no effect.
 
-####条款22: 当使用Pimpl惯用法时，必须将构造函数和析构函数定义在*.cpp文件中
+### 条款22: 当使用Pimpl惯用法时，必须将构造函数和析构函数定义在*.cpp文件中
+- Pimpl惯用法
 ```
 // In Widget.h
 class Widget
