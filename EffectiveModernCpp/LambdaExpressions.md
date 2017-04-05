@@ -200,24 +200,24 @@ auto f2 = [=]() mutable { x = 1000; }; // ok
 auto lamb = [](){return 0;};
 ```
 - lambda作为栈上对象，和其它对象一样，也有constructor/destructor；对于capture list不为空的lambda，其捕获的变量会作为这个栈上对象的成员存在着。
+ ＋ 对于按值捕捉，lambda产生的类必须为每一个值捕获的变量建立对应的数据成员，同时创建构造函数，用其捕获的变量的值来初始化数据成员
+ ＋ 对于按引用捕捉，编译器可以直接使用该引用而无需在lambda产生的类中将其存储为数据成员
 
-- lambda只是匿名函子（anonymous functor）的语法糖
+- lambda可以看作是 匿名函数子（anonymous functor）的语法糖（函数调用运算符的语法糖）
 ```
 // In C++03
 namespace {
   struct f {
     void operator()(int) {
-      // do something
+      // 函数调用运算符，do something
     }
   };
 }
-
 void func(std::vector<int>& v) {
   f f;
   std::for_each(v.begin(), v.end(), f);
 }
 ```
-
 ```
 // In C++11
 std::for_each(v.begin(), v.end(), [](int) { /* do something here*/ });
