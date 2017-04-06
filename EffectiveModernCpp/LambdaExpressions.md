@@ -202,7 +202,13 @@ auto lamb = [](){return 0;};
 - lambda作为栈上对象，和其它对象一样，也有constructor/destructor；对于capture list不为空的lambda，其捕获的变量会作为这个栈上对象的成员存在着。
  ＋ 对于按值捕捉，lambda产生的类必须为每一个值捕获的变量建立对应的数据成员，同时创建构造函数，用其捕获的变量的值来初始化数据成员
  ＋ 对于按引用捕捉，编译器可以直接使用该引用而无需在lambda产生的类中将其存储为数据成员
-
+```
+int multiplier = 5;
+auto timesFive = [multiplier](int a) { return a*multiplier; };
+std::cout << timesFive(2); // 10
+multiplier = 15;
+std::cout << timesFive(2); // 10
+```
 - lambda可以看作是 匿名函数子（anonymous functor）的语法糖（函数调用运算符的语法糖）
 ```
 // In C++03
@@ -234,13 +240,10 @@ a referencing environment for the non-local variables of that function. (Wiki)
 auto func_lamb = std::function<int()>(lamb);
 auto func_lamb_ptr = new std::function<int()>(lamb); // 亦可以创建在堆上
 ```
-
 - `std::function`是值语义的，但是支持移动操作
 
 - lambda表达式在capture list为空的情况下可以转换为函数指针，但是并不意味着它就是函数指针
-
 > + The closure type for a lambda-expression with no lambda-capture has a public non-virtual non-explicit const conversion function to pointer to function having the same parameter and return types as the closure type’s function call operator. The value returned by this conversion function shall be the address of a function that, when invoked, has the same effect as invoking the closure type’s function call operator.
-
 ```
 void f1(int (*)(int)) {}
 void f2(char (*)(int)) {}
@@ -253,7 +256,6 @@ h(glambda);  // ok: calls #1 since #2 is not convertible
  
 int& (*fpi)(int*) = [](auto* a)->auto& { return *a; }; // ok
 ```
-
 - 每个lambda表达式的类型都是完全不同的，即使它们的签名完全一致，即使两者一字不差，
 因此如果想把lambda表达式放入到标准库容器，例如`std::vector`，那么可以使用`std::function`或者其它东东。
 ```
@@ -264,6 +266,12 @@ v.push_back([&]() { return 100; }); // error!
 std::vector<std::function<int()>> functors;
 functors.push_back([&] { return 100; });
 functors.push_back([&] { return 10; });
+```
+- recursive lambda function
+```
+std::function<int(int)> factorial = [&](int i) { 
+    return (i == 1) ? 1 : i * factorial(i - 1); 
+};
 ```
 - Useful links:
 http://stackoverflow.com/questions/7627098/what-is-a-lambda-expression-in-c11
