@@ -27,7 +27,8 @@ template<class _Ty> inline
 constexpr
 _Ty&& forward(
 typename remove_reference<_Ty>::type& _Arg) _NOEXCEPT      // 参数是左值类型时，重载决议选择这个
-{	  // forward an lvalue as either an lvalue or an rvalue  // 返回值类型是左值引用或右值引用
+{
+    // forward an lvalue as either an lvalue or an rvalue  // 返回值类型是左值引用或右值引用
     return (static_cast<_Ty&&>(_Arg));
 }
 
