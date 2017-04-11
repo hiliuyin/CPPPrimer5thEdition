@@ -12,7 +12,8 @@ template<class _Ty> inline
 constexpr
 typename remove_reference<_Ty>::type&&  // 返回值类型永远是 typename remove_reference<_Ty>::type&&
 move(_Ty&& _Arg) _NOEXCEPT
-{	// forward _Arg as movable
+{
+   // forward _Arg as movable
    return (static_cast<typename remove_reference<_Ty>::type&&>(_Arg));
 }
 ```
@@ -34,7 +35,8 @@ template<class _Ty> inline
 constexpr
 _Ty&& forward(
 typename remove_reference<_Ty>::type&& _Arg) _NOEXCEPT  // 参数是右值类型时，重载决议选择这个
-{	  // forward an rvalue as an rvalue                   // 返回值类型一定是右值引用
+{
+    // forward an rvalue as an rvalue                   // 返回值类型一定是右值引用
     static_assert(!is_lvalue_reference<_Ty>::value, "bad forward call");
     return (static_cast<_Ty&&>(_Arg));
 }
