@@ -75,11 +75,11 @@ Widget w3(std::forward<Widget&>(w2)); // l-value overload
 毕竟即使再聪明的编译器，使用`insert()`和`push_back()`的拷贝/移动的开销总归无法避免。
 
 - 什么是`rvalue`, `lvalue`, `xvalue`, `glvalue`, 和 `prvalue`?
-  + An lvalue (so-called, historically, because lvalues could appear on the left-hand side of an assignment expression) designates a function or an object. [Example: If E is an expression of pointer type, then *E is an lvalue expression referring to the object or function to which E points. As another example, the result of calling a function whose return type is an lvalue reference is an lvalue.]
-  + An xvalue (an “eXpiring” value) also refers to an object, usually near the end of its lifetime (so that its resources may be moved, for example). An xvalue is the result of certain kinds of expressions involving rvalue references. [Example: The result of calling a function whose return type is an rvalue reference is an xvalue.]
-  + A glvalue (“generalized” lvalue) is an lvalue or an xvalue.
-  + An rvalue (so-called, historically, because rvalues could appear on the right-hand side of an assignment expression) is an xvalue, a temporary object or subobject thereof, or a value that is not associated with an object.
-  + A prvalue (“pure” rvalue) is an rvalue that is not an xvalue. [Example: The result of calling a function whose return type is not a reference is a prvalue]
+  + An `*lvalue*` (so-called, historically, because lvalues could appear on the left-hand side of an assignment expression) designates a function or an object. [Example: If E is an expression of pointer type, then *E is an lvalue expression referring to the object or function to which E points. As another example, the result of calling a function whose return type is an lvalue reference is an lvalue.]
+  + An `*xvalue*` (an “eXpiring” value) also refers to an object, usually near the end of its lifetime (so that its resources may be moved, for example). An xvalue is the result of certain kinds of expressions involving rvalue references. [Example: The result of calling a function whose return type is an rvalue reference is an xvalue.] `std::move`的结果就是`*xvalue*`
+  + A `*glvalue*` (“generalized” lvalue) is an lvalue or an xvalue.
+  + An `*rvalue*` (so-called, historically, because rvalues could appear on the right-hand side of an assignment expression) is an xvalue, a temporary object or subobject thereof, or a value that is not associated with an object.
+  + A `*prvalue*` (“pure” rvalue) is an rvalue that is not an xvalue. [Example: The result of calling a function whose return type is not a reference is a prvalue]
 ```
         expressions
           /     \
