@@ -79,7 +79,7 @@ Widget w3(std::forward<Widget&>(w2)); // l-value overload
 
 - 什么是`rvalue`, `lvalue`, `xvalue`, `glvalue`, 和 `prvalue`?
   + An `lvalue` (so-called, historically, because lvalues could appear on the left-hand side of an assignment expression) designates a function or an object. [Example: If E is an expression of pointer type, then *E is an lvalue expression referring to the object or function to which E points. As another example, the result of calling a function whose return type is an lvalue reference is an lvalue.]
-  + An `xvalue` (an “eXpiring” value) also refers to an object, usually near the end of its lifetime (so that its resources may be moved, for example). An xvalue is the result of certain kinds of expressions involving rvalue references. [Example: The result of calling a function whose return type is an rvalue reference is an xvalue.] `std::move`的结果就是`*xvalue*`
+  + An `xvalue` (an “eXpiring” value) also refers to an object, usually near the end of its lifetime (so that its resources may be moved, for example). An xvalue is the result of certain kinds of expressions involving rvalue references. [Example: The result of calling a function whose return type is an rvalue reference is an xvalue.] `std::move`的结果就是`xvalue`
   + A `glvalue` (“generalized” lvalue) is an lvalue or an xvalue.
   + An `rvalue` (so-called, historically, because rvalues could appear on the right-hand side of an assignment expression) is an xvalue, a temporary object or subobject thereof, or a value that is not associated with an object.
   + A `prvalue` (“pure” rvalue) is an rvalue that is not an xvalue. [Example: The result of calling a function whose return type is not a reference is a prvalue]
@@ -94,6 +94,7 @@ Widget w3(std::forward<Widget&>(w2)); // l-value overload
     /      \   /      \
 lvalues   xvalues   prvalue
 ```
+
 - Important rvalue reference properties:
   + For overload resolution, lvalues prefer binding to lvalue references and rvalues prefer binding to rvalue references. Hence why temporaries prefer invoking a move constructor / move assignment operator over a copy constructor / assignment operator.
   + rvalue references will implicitly bind to rvalues and to temporaries that are the result of an implicit conversion. i.e. 
@@ -101,7 +102,7 @@ lvalues   xvalues   prvalue
   is well formed because float is implicitly convertible to int; the reference would be to a temporary that is the result of the conversion.
   + Named rvalue references are lvalues. Unnamed rvalue references are rvalues. This is important to understand why the std::move call is necessary in: `foo&& r = foo(); foo f = std::move(r);`
 
-- stackoverflow上关于左值／右值一些极好的讲解 
+- stackoverflow上关于左值／右值一些极好的讲解   
 http://stackoverflow.com/questions/3582001/advantages-of-using-forward
 http://stackoverflow.com/questions/3106110/what-are-move-semantics
 http://stackoverflow.com/questions/5481539/what-does-t-double-ampersand-mean-in-c11
