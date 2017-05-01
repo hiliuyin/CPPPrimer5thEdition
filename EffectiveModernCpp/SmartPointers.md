@@ -96,8 +96,9 @@ std::shared_ptr<Widget> spw(new Widget(), loggingDel);
   + 调用`std::make_shared`
   + 调用`std::shared_ptr`的构造函数从raw pointer创建`std::shared_ptr`
   + 当`std::shared_ptr`从`std::unique_ptr`或`std::auto_ptr`创建出来的
+  
 - 使用`std::make_shared`创建`std::shared_ptr`可以避免两次调用new操作符分配两次内存（一次是对象，一次是control block）
-
+- `std::make_shared`和`std::make_unique`传递参数利用了完美转发（Perfect forwarding）
 - `std::shared_ptr`支持拷贝语义，也支持移动语义
 - `std::shared_ptr`可作为容器中的元素
 
