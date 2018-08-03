@@ -486,13 +486,13 @@ sizeof(a);   // no degration.
 ```
 
 - C++中，数组还有其他场合不发生退化：
- + 比如作为引用的initializer；
- + 作为typeid/typeinfo的操作数和模板推导时；
- + 作为decltype的参数时
+  + 比如作为引用的initializer；
+  + 作为typeid/typeinfo的操作数和模板推导时；
+  + 作为decltype的参数时
 
 - 解引用操作符可作用于指针和数组名：
- + 对指针和一维数组解引用，会发生访存操作
- + 对多维数组解引用，只是类型改变。
+  + 对指针和一维数组解引用，会发生访存操作
+  + 对多维数组解引用，只是类型改变。
 ```
 int x = 100;
 int *p = &x;
@@ -504,8 +504,8 @@ int array[2] = { 10, 20 };
 int array[3][4];  // *array的类型是 int[4]
 ```
 - 取址操作符可作用于数组名和指针：
- + 对指针取址，取得的是指针所在的地址，即指向指针的指针；
- + 对数组名取址，只是类型改变，得到的还是该数组首元素的地址。
+  + 对指针取址，取得的是指针所在的地址，即指向指针的指针；
+  + 对数组名取址，只是类型改变，得到的还是该数组首元素的地址。
 ```
 int array[10];   // sizeof(array) = 10*sizeof(int)
 printf(“0x%x\n”, &array);  // -> printf(“0x%x\n”, array);
@@ -596,17 +596,17 @@ for (auto row : v)
 - 枚举类型的对象的初始化和赋值只能通过其枚举成员或同一枚举类型的其它对象来进行。
 
 - 枚举类型的宽度是implementation-defined的，只要规定了其宽度能容纳下最大的枚举成员值:
- + C中char和integer类型都可以，选择权在于实现；
- + C++中则是int->unsigned int->long->unsigned long，依次选择。
+  + C中char和integer类型都可以，选择权在于实现；
+  + C++中则是int->unsigned int->long->unsigned long，依次选择。
 
 - C++11之前的plain enum有如下的缺点
- + 可以被隐式转换为int
- + 在所在的命名空间中，enum中的enumerator是可见的，会污染命名空间
+  + 可以被隐式转换为int
+  + 在所在的命名空间中，enum中的enumerator是可见的，会污染命名空间
 
 - C++11引入了enum class，替代之前的plain enum
- + enum class不会被隐式转换为int
- + enum class不会污染命名空间
- + enum class可以被前置声明
+  + enum class不会被隐式转换为int
+  + enum class不会污染命名空间
+  + enum class可以被前置声明
 
 * **typedef**
 
