@@ -1,8 +1,6 @@
-#####标准库类型`std::string`
+##### 标准库类型`std::string`
 
 头文件不应该包含using声明
-
- 
 
 直接初始化和拷贝初始化
 
@@ -14,13 +12,9 @@ string s7(10, 'c'); // 直接初始化
 
 string s8 = string(10, 'c'); // 拷贝初始化
 
- 
-
 size函数返回string 对象的长度（即string对象中字符的个数）
 
     size_type size() const;
-
- 
 
 string::size_type类型
 
