@@ -1,4 +1,4 @@
-##### 条款1: 深刻理解模板类型推断(template type deduction)
+### 条款1: 深刻理解模板类型推断(template type deduction)
 
 ```
 template <typename T> void f(ParamType param);
