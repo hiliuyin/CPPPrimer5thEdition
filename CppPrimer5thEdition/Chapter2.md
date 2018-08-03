@@ -270,6 +270,7 @@ void\*类型指针可用于传递地址值（函数参数，函数返回值，�
         int x = 99;   movl $99, -24(%ebp)
         int &rx = x;  leal -24(%ebp), %eax // 实际就是通过被引用对象的地址进行操作
                       movl %eax, -16(%ebp)
+        LEA, the only instruction that performs memory addressing calculations but doesn't actually address memory.
 
 ##### const限定符 （const qualifier）
 * const限定符修饰的对象是左值，但是不是可修改的左值
