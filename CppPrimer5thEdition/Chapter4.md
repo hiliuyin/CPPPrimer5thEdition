@@ -1,4 +1,4 @@
-#### **隐式类型转换（implicit cast）**
+### **隐式类型转换（implicit cast）**
 
 - 编译器在必要的时候，隐式地将类型转换规则应用到内置类型和类类型的对象上。
 
@@ -10,7 +10,7 @@
 
 C++为内置类型定义了一组转换规则，包括：
 
-#####算术转换
+#### 算术转换
 算术转换规则将二元操作符的操作数转换为同一类型，并且表达式的值也具有相同类型。
 算术转换规则定义了一个类型转换层次，规定了操作数应该按照什么规则转换为表达式中最宽的类型。    
 
@@ -53,7 +53,7 @@ usval + ival;   // promotion depends on size of unsigned short and int
 uival + lval;   // conversion depends on size of unsigned int and long
 ```
 
-###### 指针转换
+#### 指针转换
 - 数组名在多数情况下会被隐式转换为指向数组元素类型的指针
 ```
 extern void foo(int x[]);
@@ -77,7 +77,7 @@ foo(x);  // int[4][5] converted to int(*)[5]
 
 - 指向任意对象的指针可以被转换为const void*类型
  
-###### bool类型转换：
+#### bool类型转换：
 - 算术值和指针值均可被转换为bool类型，如果算术值和指针值为 0, 则转换为 false；否则被转换为 true。
 ```
 if (cp) /* ... */ // true if cp is not zero
@@ -86,11 +86,11 @@ while (*cp) /* ... */ // dereference cp and convert resulting char to bool
 
 - bool类型可以被转换为算术类型，false 转换为 0；true 转换为 1。
 
-##### 枚举类型转换：
+#### 枚举类型转换：
 - 枚举类型的对象和枚举类型的成员可被转换为整型类型，其转换结果可用于任何要求整型值的地方。
 - 枚举类型转换为何种整型类型，取决于枚举类型的最大值。C++中按照 int -> unsigned int -> long -> unsigned long依次选择。
 
-##### const转换：
+#### const转换：
 - 当用非const对象去初始化const对象的引用时，非const对象被转换为const对象；
 - 当用非const对象的地址或指向非const对象的指针去初始化指向const对象的指针时，亦发生const转换。
 ```
@@ -100,7 +100,7 @@ const int &j = i; // ok: convert non-const to reference to const int
 const int *p = &ci; // ok: convert address of non-const to address of a const
 ```
 
-##### C++标准库也定义了一系列转换规则
+#### C++标准库也定义了一系列转换规则
 重要类型转换如下：
 ```
 while(cin > s) // isstream -> bool
@@ -119,9 +119,9 @@ void *p = &d;
 double *dp = static_cast<double*>(p);
 ```
 
-###### **`dynamic_cast`** 运行时类型识别
+#### **`dynamic_cast`** 运行时类型识别
 
-###### **`const_cast`**
+#### **`const_cast`**
  - const_cast只能改变运行对象的底层const
 ```
 const char *pc;
@@ -136,12 +136,13 @@ static_cast<string>(cp); // ok
 const_cast<string>(cp); // error
 ``` 
 
-###### **`reinterpret_cast`**
+#### **`reinterpret_cast`**
  - `reinterpret_cast`通常为运算对象的位模式提供较低层次上的重新解释
 ```
 int *ip;
 char *pc = reinterpret_cast<char*>(ip);
 ```
+
  － `reinterpret_cast`本质上依赖于机器
 ```
 using PF = void (*)(); // 等价于 typedef void (*PF)();
@@ -152,7 +153,7 @@ void *p3 = static_cast<void*>(pf); // error
 void *p4 = reinterpret_cast<void*>(pf); // ok
 ```
 
-##### 旧式的强制类型转换
+#### 旧式的强制类型转换
 ```
 type (expr); // 函数形式
 (type) expr; // C语言风格
