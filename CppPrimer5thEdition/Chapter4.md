@@ -3,10 +3,10 @@
 - 编译器在必要的时候，隐式地将类型转换规则应用到内置类型和类类型的对象上。
 
 - 在下列情况下，将会发生隐式类型转换：
- + 在混合类型的表达式中，其操作数被转换为相同的类型；
- + 用作条件的表达式被转换为bool类型；
- + 用一个表达式初始化某个变量，或者将一个表达式赋值给某个变量，则该表达式被转换为该变量的类型；
- + 函数调用发生时，实参被转换为形参的类型。
+  + 在混合类型的表达式中，其操作数被转换为相同的类型；
+  + 用作条件的表达式被转换为bool类型；
+  + 用一个表达式初始化某个变量，或者将一个表达式赋值给某个变量，则该表达式被转换为该变量的类型；
+  + 函数调用发生时，实参被转换为形参的类型。
 
 C++为内置类型定义了一组转换规则，包括：
 
@@ -66,8 +66,8 @@ foo(x);  // int[4][5] converted to int(*)[5]
 ```
 
 - 例外情况如下：
- + 数组用作decltype关键字的参数时，取址运算符作用于数组名，sizeof运算符，typeid运算符，
- + 用数组名去初始化数组引用类型
+  + 数组用作decltype关键字的参数时，取址运算符作用于数组名，sizeof运算符，typeid运算符，
+  + 用数组名去初始化数组引用类型
 
 - 整型常量 0 可以被转换为任何指针类型
 
@@ -107,8 +107,8 @@ while(cin > s) // isstream -> bool
 string s = "hello world"; // const char* -> string
 ```
 
-##### 显式转换
-###### **`static_cast`**
+### 显式转换
+#### **`static_cast`**
 
  - 任何具有明确定义的类型转换，只要不包含底层const，都可以使用static_cast
 
@@ -137,13 +137,7 @@ const_cast<string>(cp); // error
 ``` 
 
 #### **`reinterpret_cast`**
- - `reinterpret_cast`通常为运算对象的位模式提供较低层次上的重新解释
-```
-int *ip;
-char *pc = reinterpret_cast<char*>(ip);
-```
-
- － `reinterpret_cast`本质上依赖于机器
+ - `reinterpret_cast`本质上依赖于机器
 ```
 using PF = void (*)(); // 等价于 typedef void (*PF)();
 PF pf;
@@ -151,6 +145,11 @@ void *p1 = pf; // error
 void *p2 = (void*)pf; // ok
 void *p3 = static_cast<void*>(pf); // error
 void *p4 = reinterpret_cast<void*>(pf); // ok
+```
+ - `reinterpret_cast`通常为运算对象的位模式提供较低层次上的重新解释
+```
+int *ip;
+char *pc = reinterpret_cast<char*>(ip);
 ```
 
 #### 旧式的强制类型转换
