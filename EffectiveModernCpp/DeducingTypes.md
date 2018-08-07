@@ -6,7 +6,8 @@ f(expr); // 推断T和ParamType的类型
 ```
 
 - ParamType类型为引用或者指针，但不是Universal Reference
-  - 如果expr的类型是引用，那么忽略掉引用，而使用被引用对象的类型
+  1. 如果expr的类型是引用，那么忽略掉引用，而使用被引用对象的类型
+  2. 然后模式匹配ParamType和expr的类型，以确定T的类型
 
 ```
 template <typename T> void f1(T& param);
@@ -33,6 +34,8 @@ f3(px);  // T is const int, ParamType is const int*
 - ParamType类型是Universal Reference
   + Universal Reference 在标准中已经重新命名为 Forwarding Reference
   + 在函数模板类型参数列表中，T&&表示Universal Reference
+  + If expr is an lvalue, both T and ParamType are deduced to be lvalue references.
+  + If expr is an rvalue, the “normal” rules apply.
   + When the function parameter type is of the form T&& where T is a template parameter, and the function argument is an lvalue of type A, the type A& is used for template argument deduction. 
   + 引用折叠的规则: "[given] a type TR that is a reference to a type T, an attempt to create the type “lvalue reference to cv TR” creates the type “lvalue reference to T”, while an attempt to create the type “rvalue reference to cv TR” creates the type TR." 
 ```
