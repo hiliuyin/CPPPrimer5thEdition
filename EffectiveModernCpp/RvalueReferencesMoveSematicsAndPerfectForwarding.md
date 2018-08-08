@@ -95,6 +95,9 @@ Widget w3(std::forward<Widget&>(w2)); // l-value overload
 lvalues   xvalues   prvalue
 ```
 
+- “New” Value Terminology from B.S.
+http://www.stroustrup.com/terminology.pdf
+
 - Important rvalue reference properties:
   + For overload resolution, lvalues prefer binding to lvalue references and rvalues prefer binding to rvalue references. Hence why temporaries prefer invoking a move constructor / move assignment operator over a copy constructor / assignment operator.
   + rvalue references will implicitly bind to rvalues and to temporaries that are the result of an implicit conversion. i.e. 
