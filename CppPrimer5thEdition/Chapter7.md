@@ -4,7 +4,7 @@
 - 类提供了用户自定义自己的数据类型，类常被称为用户定义的类型（User-Defined Type, UDT）。
 - 简而言之，类就是定义了一个新的类型和新的作用域。
 
-##### 类的声明和定义
+#### 类的声明和定义
 - 类定义形成了一个独立的类域，类域可以嵌套。
 ```
 class A { ... };
@@ -34,12 +34,13 @@ A foo(A a) {} // error
 
 - 类定义不会引起内存的分配，只有类的实例出现时，才会分配内存
 
-##### 名字查找（name lookup）和类的作用域
+#### 名字查找（name lookup）和类的作用域
 - 对于定义在类内部的成员函数来说，解析名字的方式与传统的名字查找规则有所区别
 类的定义分两步处理：首先，编译成员的声明, 直到类全部可见后才编译函数体
 按照这种两阶段的方式处理类可以简化类代码的组织结构，因为成员函数体直到整个类可见后才会被处理
 因此它能使用类中定义的任何名字
 这种两阶段的处理方式只适用于成员函数体中使用的名字
+
 声明中使用的名字，包括返回类型或者参数列表中使用的名字，都必须在使用前确保可见
 如果某个成员的声明使用了类中尚未出现的名字，则编译器则会在定义该类的外部作用域中继续查找
 ```
@@ -71,9 +72,9 @@ private:
 ```
 
 - 成员函数中使用的名字按照如下方式解析：
-首先在成员函数内查找该名字的声明，只有在该名字出现之前的声明才被考虑
-如果在成员函数内没有找到，则在类内继续查找，这时类的所有成员都可以被考虑
-如果类内也没有找到该名字的声明，则在成员函数定义之前的作用域内继续查找
+ + 首先在成员函数内查找该名字的声明，只有在该名字出现之前的声明才被考虑
+ + 如果在成员函数内没有找到，则在类内继续查找，这时类的所有成员都可以被考虑
+ + 如果类内也没有找到该名字的声明，则在成员函数定义之前的作用域内继续查找
 ```
 int height;
 class Screen {
@@ -113,7 +114,7 @@ void Screen::setHeight(pos var) {
 }
 ```
 
-##### 成员函数（member function）
+#### 成员函数（member function）
 - 在类内部定义的函数是隐式的inline函数，也可以加上inline关键字做为显式声明。
 ```
 class A
@@ -169,14 +170,14 @@ int main()
 }
 ```
 
-##### 类成员访问
+#### 类成员访问
 - 关键字public，private 和protected 称为访问限定符（access specifier）
 - 公有成员（public）可以在任何地方被访问
 - 私有成员（private）可以被类成员函数和类友元访问
 - 保护成员（protected）可以被类成员函数和派生类访问，亦可被友元访问
 - 使用class和struct定义类的唯一区别就是默认的访问权限, 在缺省情况下，未指定访问限定符，class中的成员为private的，struct中的成员为public的
 
-##### 友元
+#### 友元
 - 友元机制允许一个类授权其它的函数和类访问其非公有成员
 - 友元可以是一个命名空间函数，也可以是类成员函数，或者是一个类
 - 友元声明只可出现在类体中，友元不是类的成员也不受访问限定符的约束
@@ -210,7 +211,7 @@ void f();
 void X::h() { f(); } // ok
 ```
  
-##### 类型成员
+#### 类型成员
 - 除了数据成员和函数成员外，类还可以自定义某种类型在类中的别名
 - 用来定义类型的成员必须先定义后使用
 ```
@@ -239,7 +240,7 @@ Screen::pos Screen::size() const  // 类外定义的成员函数的返回类型�
 }
 ```
  
-##### 可变数据成员（mutable data member）
+#### 可变数据成员（mutable data member）
 - 将数据成员声明为mutable，则允许在const成员函数中修改该数据成员
 ```
 class Screen {
@@ -254,7 +255,7 @@ void Screen::some_member() const
 }
 ```
  
-##### 类数据成员的初始值
+#### 类数据成员的初始值
 - 当我们提供一个类内初始值时，必须以符号＝或者花括号表示
 ```
 class Window_mgr {
@@ -264,7 +265,7 @@ private:
 };
 ```
  
-##### const成员函数
+#### const成员函数
 - 为了尊重类的实例的常量性，编译器必须区分安全的和不安全的成员函数
 - 语义上，将成员函数声明为const，表示函数不会修改类的对象
 - const在成员函数的声明和定义处都需要显式声明
@@ -319,12 +320,12 @@ class A {
 };
 ```
 
-##### volatile成员函数
+#### volatile成员函数
 - volatile类实例只能调用volatile类成员函数，构造函数和析构函数除外。
 - volatile限定符参与函数重载决议。
 - volatile成员函数的this指针类型是指向const类类型对象的volatile指针。
 
-##### 构造函数(Constructor)
+#### 构造函数(Constructor)
 - 构造函数是特殊的成员函数，在创建类的对象的时候用于初始化对象
 - 构造函数的执行可以看成两个阶段，初始化阶段，然后是执行函数内的语句
 - 无论是否在初始化列表中显式初始化，类类型的数据成员总是在初始化阶段被初始化
@@ -357,7 +358,7 @@ struct Sales_data
 Sales_data s; // error, ambigious
 ```
 
-##### 合成的默认构造函数（Synthesized Default Constructor）
+#### 合成的默认构造函数（Synthesized Default Constructor）
 - 如果我们的类没有显式地定义构造函数，那么编译器会隐式地定义一个默认构造函数。
 编译器创建的构造函数称为合成的默认构造函数（synthesized default constructor）
 - 它按照如下规则初始化类的数据成员：
@@ -383,7 +384,7 @@ struct Sales_data
 Sales_data::Sales_data() = default;
 ```
 
-##### 构造函数初始值列表（constructor initialize list）
+#### 构造函数初始值列表（constructor initialize list）
 - 通常情况下，构造函数使用类内初始值不失为一个好的选择
 - 当某个数据成员没有被构造函数初始值列表显式地初始化，它将以与合成默认构造函数相同的方式隐式初始化
 ```
@@ -413,7 +414,7 @@ ConstRef::ConstRef(int ii) : ci(ii), ri(i) {} // ok
 - 构造函数初始值列表只用于初始化数据成员的值，而不限定初始化的具体执行顺序
 - 数据成员的初始化顺序与它们在类定义中的出现顺序一致
 
-##### 委托构造函数（Delegating Constructor）
+#### 委托构造函数（Delegating Constructor）
 - 一个类的委托构造函数使用它所属类的其它构造函数执行他自己的初始化过程，或者说他把它自己的一些（或者全部）职责委托给了其它构造函数
 - 当一个构造函数委托给另一个构造函数时，受委托的构造函数的初始值列表和函数体被依次执行，最后才会执行委托者的函数体
 ```
@@ -429,7 +430,7 @@ public:
 };
 ```
  
-##### 隐式的类类型转换
+#### 隐式的类类型转换
 - 可以用单个实参调用的构造函数实际定义了从构造函数的参数类型转换为此类类型的隐式转换机制, 我们称这种构造函数为转换构造函数（converting constructor）
 ```
 class Sales_item {
@@ -468,7 +469,7 @@ item.combine(Sales_data(null_book)); // ok
 item.combine(static_cast<Sales_data>(cin)); // ok
 ```
  
-##### 标准库中含有显式构造函数的类
+#### 标准库中含有显式构造函数的类
 - 接受一个单参数const char*的string构造函数不是explicit的
 ```
 string str = "hello world"; // ok, copy initialization
@@ -481,7 +482,7 @@ vector<int> v(n); // ok, direct initialization
 vector<int> v = n; // error, explicit constructor
 ```
  
-##### 聚合类（Aggregate class）
+#### 聚合类（Aggregate class）
 - 聚合类使得用户可以直接访问其成员，并且具有特殊的初始化语法
 - 当一个类满足如下条件时，我们说它是聚合的
  + 所有成员都是public的
@@ -497,7 +498,7 @@ struct Data {
 Data val1 = {0, "Anna"};
 ```
 
-##### 类的静态成员
+#### 类的静态成员
 - 类的static成员的名字位于类域中
 ```
 int foo(); // 全局域
@@ -614,7 +615,7 @@ struct A
 constexpr int Account::period; // ok, definition
 ```
 
-指向类的非static成员的指针
+- 指向类的非static成员的指针
 ```
 class Screen {
 public:
